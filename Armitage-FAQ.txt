@@ -1,0 +1,30 @@
+FIRST STEP
+service postgresql start
+service metasploit start
+service metasploit stop ( turn to the third step if once you done it )
+
+SECOND STEP
+msfdb init
+
+MSF_DATABASE_CONFIG
+
+THIRD STEP 
+
+/etc/init.d/postgresql start
+
+armitage
+
+PROBLEM SOLVE
+
+apt-get cleanup
+apt-get update && apt-get upgrade
+
+如果更新源不能生效，可以手动下载更新包安装
+
+1. head over to http://www.fastandeasyhacking.com/download and download the tgz file
+2. cd /root/Downloads
+3. tar -xf armitage150813.tgz
+4. now head over to usr/share/armitage and replace all the files in that folder with you files you just downloaded and extracted.
+5. reboot
+
+运行Armitage前还需要执行 /etc/init.d/postgresql start  初始化数据库，否则会提示出错。
