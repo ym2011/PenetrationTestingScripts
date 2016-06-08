@@ -29,15 +29,15 @@
 #
 #
 #
-#root@kali:~# crontab -u root /root/batchaccess#Ê¹ÓÃrootÓÃ»§¶¨Ê±Ö´ĞĞ /root/batchaccess Õâ¸öÎÄ¼ş
-#root@kali:~# crontab -u root -l# ÁĞ³ö rootÓÃ»§µÄ¶¨Ê±ÈÎÎñ
-#root@kali:~# crontab -u root -r# Çå¿Õ rootÓÃ»§µÄ¶¨Ê±ÈÎÎñ
-#root@kali:~#  crontab -u root -i -r # ÔÚÇå¿Õ rootÓÃ»§µÄ¶¨Ê±ÈÎÎñÖ®Ç°£¬ĞèÒªÓÃ»§ÊÖ¶¯È·ÈÏÊÇ·ñÇå¿Õ
+#root@kali:~# crontab -u root /root/batchaccess#ä½¿ç”¨rootç”¨æˆ·å®šæ—¶æ‰§è¡Œ /root/batchaccess è¿™ä¸ªæ–‡ä»¶
+#root@kali:~# crontab -u root -l# åˆ—å‡º rootç”¨æˆ·çš„å®šæ—¶ä»»åŠ¡
+#root@kali:~# crontab -u root -r# æ¸…ç©º rootç”¨æˆ·çš„å®šæ—¶ä»»åŠ¡
+#root@kali:~#  crontab -u root -i -r # åœ¨æ¸…ç©º rootç”¨æˆ·çš„å®šæ—¶ä»»åŠ¡ä¹‹å‰ï¼Œéœ€è¦ç”¨æˆ·æ‰‹åŠ¨ç¡®è®¤æ˜¯å¦æ¸…ç©º
 #
 #root@kali:/# locate siege
 #root@kali:/# leafpad /var/log/siege.log 
 #root@kali:/# cat /var/log/syslog |grep "siege" 
-#
+#root@kali:/# rm /var/log/siege.log
 #
 #root@kali:~# /etc/init.d/cron restart
 #root@kali:~# service cron restart
