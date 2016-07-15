@@ -1,5 +1,6 @@
 #BruteXSS
-
+#The redistribute version is at https://github.com/ym2011/penetration/tree/master/BruteXSS
+#there are more payload added into the file
 BruteXSS - Cross-Site Scripting BruteForcer
 
 Author: [Shawar Khan](https://shawarkhan.com)
