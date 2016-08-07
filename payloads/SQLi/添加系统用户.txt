@@ -1,0 +1,5 @@
+net user	#列出系统已存在的用户
+net user root ym2011 /add	#添加一个用户
+net user administrators /add	#将该用户提权到管理员
+net user	#确认已成功添加新用户
+net user root	# 确认新用户的权限
