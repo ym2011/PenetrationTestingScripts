@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<!--
+    Hyperspace by HTML5 UP
+    html5up.net | @n33co
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+    <head>
+        <title>RainmapLite</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--[if lte IE 8]><script src="static/js/ie/html5shiv.js"></script><![endif]-->
+        <link rel="stylesheet" href="static/css/main.css" />
+        <!--[if lte IE 9]><link rel="stylesheet" href="static/css/ie9.css" /><![endif]-->
+        <!--[if lte IE 8]><link rel="stylesheet" href="static/css/ie8.css" /><![endif]-->
+    </head>
+    <body>
+
+    <!-- Sidebar -->
+        <section id="sidebar">
+            <div class="inner">
+                <nav>
+                    <ul>
+                        <li><a href="#">RainmapLite</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+    <!-- Three -->
+        <section id="three" class="wrapper style1 fade-up">
+            <div class="inner">
+                <h2>RainmapLite</h2>
+                <p>Enter email address and target, select a scanning profile and scan!</p>
+{% if popup_message %}<p><blockquote><strong>{{ popup_message }}</strong></blockquote></p>{% endif %}
+    <div class="split style1">
+        <section>
+            <form method="post" action="/">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="target">Target(s)</label>
+                    <input type="text" name="target_text" id="target" />
+                </div>
+                <div class="field half first">
+                    <label for="profile">Profile</label>
+                    <select name = "profile">
+                    {% for profile in profiles %}
+                        <option value="{{profile.id}}">{{ profile.alias_text }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="field half">
+                    <label for="email">Email</label>
+                    <input type="text" name="email_text" id="email" />
+                </div>
+                <input id="customCheckbox" type="checkbox" name="customCheckbox" value="custom
+                " onclick='$(".custom").toggle();' /><label for="customCheckbox">Custom Nmap arguments</label>
+                <div class="field">
+
+    <div class="custom">
+    <textarea name="cmd_text" id="command" rows="5"></textarea>
+    </div>
+</div>
+<ul class="actions">
+    <li>
+    <input type="submit" class="special" value="Scan" />
+    </li>
+</ul>
+</form>
+</section>
+<section>
+    <ul class="contact">
+        <h2>
+            Available profiles
+        </h2>
+        {% for profile in profiles %}
+        <li>
+            <h3>{{profile.alias_text}}</h3>
+            <span>{{profile.args_text}}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+</div>
+</div>
+</section>
+
+    </div>
+
+    <!-- Footer -->
+        <footer id="footer" class="wrapper style1-alt">
+            <div class="inner">
+                <ul class="menu">
+                    <li>&copy; RainmapLite (Beta).</li>
+                </ul>
+            </div>
+        </footer>
+
+    <!-- Scripts -->
+        <script src="static/js/jquery.min.js"></script>
+        <script src="static/js/jquery.scrollex.min.js"></script>
+        <script src="static/js/jquery.scrolly.min.js"></script>
+        <script src="static/js/skel.min.js"></script>
+        <script src="static/js/util.js"></script>
+        <!--[if lte IE 8]><script src="static/js/ie/respond.min.js"></script><![endif]-->
+        <script src="static/js/main.js"></script>
+    <script type="text/javascript">
+$(document).ready(function(){
+    $('input[type="checkbox"]').click(function(){
+        if($(this).attr("value")=="custom"){
+            $(".custom").toggle();
+        }
+    });
+});
+</script>
+    </body>
+</html>
