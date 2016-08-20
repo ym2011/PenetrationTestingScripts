@@ -6,9 +6,8 @@ If you do not have Django installed use: `pip install Django`
 Install it with `pip install lxml`
 
 ##Linux/OSX
-- Download the code from this repository.
 ```
-git clone https://github.com/cldrn/rainmap-lite
+download the files from  https://github.com/ym2011/penetration/tree/master/rainmap-lite
 ```
 - Update BASE_URL, SMTP_USER, SMTP_PASS, SMTP_SERVER and SMTP_PORT in nmaper-cronjob.py with your base URL and SMTP credentials to receive email alerts.  
 - Create the database schema 
