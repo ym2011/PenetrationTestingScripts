@@ -20,7 +20,7 @@ This project is still in beta version. Any feedback, bug reports and PRs are gre
 
 ## Screenshots
 * Responsive interface
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/rainmap-lite-1.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-1.png" />
 * Customizable
 <img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-2.png" />
 * Scanning profiles
