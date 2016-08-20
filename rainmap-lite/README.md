@@ -17,24 +17,19 @@ Unlike it's predecessor [1], Rainmap-lite does not require special services (Rab
 
 This project is still in beta version. Any feedback, bug reports and PRs are greatly appreciated!
 
-## Demo
-https://youtu.be/3oNegHPBd3o
-
-## Documentation
-You can find all the documentation related to this project on the [Wiki](https://github.com/cldrn/rainmap-lite/wiki/ "Rainmap Lite Documentation")
 
 ## Screenshots
 * Responsive interface
 <img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/rainmap-lite-1.png" />
 * Customizable
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/screenshots/rainmap-lite-2.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-2.png" />
 * Scanning profiles
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/screenshots/rainmap-lite-3.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-3.png" />
 * Site Administration allows managements of users, scanning profiles and scans
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/screenshots/rainmap-lite-4.png" />
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/screenshots/rainmap-lite-5.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-4.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-5.png" />
 * Cron based
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/screenshots/rainmap-lite-6.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-6.png" />
 * Results delivered by email
-<img style="float:center;width:80%" src="https://raw.githubusercontent.com/cldrn/rainmap-lite/master/screenshots/rainmap-lite-7.png" />
+<img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-7.png" />
 
