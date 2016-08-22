@@ -17,6 +17,9 @@ Unlike it's predecessor [1], Rainmap-lite does not require special services (Rab
 
 This project is still in beta version. Any feedback, bug reports and PRs are greatly appreciated!
 
+note:
+The scan URL is: http://10.10.10.10:8080/ ,if  you change it,please watch what the terminal output after you type " python manage.py runserver 0.0.0.0:8080", the ip is the ip of your machine 
+The admin URL is: http://10.10.10.10:8080/console/
 
 ## Screenshots
 * Responsive interface
