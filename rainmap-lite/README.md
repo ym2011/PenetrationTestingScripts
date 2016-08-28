@@ -18,12 +18,13 @@ Unlike it's predecessor [1], Rainmap-lite does not require special services (Rab
 This project is still in beta version. Any feedback, bug reports and PRs are greatly appreciated!
 
 note:
-The scan URL is: http://10.10.10.10:8080/ ,if  you change it,please watch what the terminal output after you type " python manage.py runserver 0.0.0.0:8080", the ip is the ip of your machine 
-The admin URL is: http://10.10.10.10:8080/console/
-The results are stored in "/root/rainmap-lite-1.0/rainmap-lite/nmaper/static/results", it all depends on you where you extract  the compressed package of rainmap-lite
-The log usually locates at " /var/log/nmaper.log ", or  you can just do the following step：
+*The scan URL is: http://yourip:8080/ 
+*The admin URL is: http://yourip:8080/console/
+*The results are stored in "/root/rainmap-lite-1.0/rainmap-lite/nmaper/static/results", it all depends on you where you extract  the compressed package of rainmap-lite
+*The log usually locates at " /var/log/nmaper.log ", or  you can just do the following step：
 updatedb
 cd `locate nmaper.log`
+
 ## Screenshots
 * Responsive interface
 <img style="float:center;width:80%" src="https://raw.githubusercontent.com/ym2011/penetration/master/rainmap-lite/screenshots/rainmap-lite-1.png" />
