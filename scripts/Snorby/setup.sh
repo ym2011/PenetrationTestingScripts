@@ -1,28 +1,59 @@
 #!/usr/bin/env bash
 # author: ym2011
 # date: 2016-11-21
-# version: 0.0.2
+# version: 0.0.4
 echo "it will install snorby,suricata,barnyard2 automately. so take a coffee/n"
 
 yum install epel-release
-sleep 120
+yum -y install yum-utils
+yum clean all
+yum-complete-transaction --cleanup-only
+
+sleep 60
 # install dependences
 yum -y install gcc-c++ patch readline readline-devel zlib zlib-devel git-core libyaml-devel libffi-devel openssl-devel make libpcap-devel pcre-devel libyaml-devel file-devel jansson-devel nss-devel libcap-ng-devel libnet-devel tar libnetfilter_queue-devel lua-devel mysql-devel fontconfig-devel libX11-devel libXrender-devel libxml2-devel libxslt-devel qconf
 
 # dwonload and install ImageMagick
 cd /opt/
 wget --no-check-certificate -t 50 https://www.imagemagick.org/download/ImageMagick-6.9.6-5.tar.gz
+if [ ! -f "ImageMagick-6.9.6-5.tar.gz" ]
+then
+	echo "the network is unreachable.please check your network and run this script again"
+else
+	fs="`du -B 1M ImageMagick-6.9.6-5.tar.gz | awk '{print $1}'`"
+	while [ $fs -lt 12 ];
+	do
+		rm -rf ImageMagick-6.9.6-5.tar.gz && echo "the network is unstable.please check your network and run this script again"
+		wget --no-check-certificate -t 50 https://www.imagemagick.org/download/ImageMagick-6.9.6-5.tar.gz
+		break
+	done
+
+fi
 tar zxvf ImageMagick-6.9.6-5.tar.gz && cd ImageMagick-6.9.6-5
-sleep 10
 ./configure && make && make install
-sleep 10
+sleep 5
 ldconfig /usr/local/lib
 
 # dwonload and install yaml
 cd /opt/
 wget --no-check-certificate -t 50 http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
+if [ ! -f "yaml-0.1.4.tar.gz" ]
+then
+	echo "the network is unreachable.please check your network and run this script again"
+else
+	fs="`du -B 1k yaml-0.1.4.tar.gz | awk '{print $1}'`"
+	while [ $fs -lt 450 ];
+	do
+		rm -rf yaml-0.1.4.tar.gz && echo "the network is unstable.please check your network and run this script again"
+		wget --no-check-certificate -t 50 http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
+		break
+	done
+
+fi
+
 tar zxvf yaml-0.1.4.tar.gz && cd yaml-0.1.4
 ./configure && make && make install
+sleep 5
 
 # dwonload and install libhtp
 cd /opt/
@@ -30,6 +61,7 @@ wget --no-check-certificate -t 50 -O libhtp-0.5.20.tar.gz https://codeload.githu
 tar zxvf libhtp-0.5.20.tar.gz && cd libhtp-0.5.20
 ./autogen.sh
 ./configure && make && make install
+sleep 10
 
 # configure mysql
 # yum install mysql mysql-devel mysql*
@@ -45,10 +77,11 @@ command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 source /etc/profile.d/rvm.sh
 sleep 10
 rvm install 2.0.0
+sleep 20
 ruby -v
-
+sleep 20
 gem install bundler
-
+sleep 20
 # dwonload and install snorby
 cd /opt/ && git clone git://github.com/Snorby/snorby.git && cd snorby
 
@@ -76,18 +109,45 @@ bundle install
 iptables -I INPUT -p tcp --dport 3000 -m state --state=NEW,ESTABLISHED,RELATED -j ACCEPT
 
 # dwonload and install barnyard2
-cd /opt/ && wget wget --no-check-certificate -t 50 -O barnyard2-2-1.13.tar.gz https://codeload.github.com/firnsy/barnyard2/tar.gz/v2-1.13
+cd /opt/ && wget --no-check-certificate -t 50 -O barnyard2-2-1.13.tar.gz https://codeload.github.com/firnsy/barnyard2/tar.gz/v2-1.13
+if [ ! -f "barnyard2-2-1.13.tar.gz" ]
+then
+	echo "the network is unreachable.please check your network and run this script again"
+else
+	fs="`du -B 1k barnyard2-2-1.13.tar.gz | awk '{print $1}'`"
+	while [ $fs -lt 400 ];
+	do
+		rm -rf barnyard2-2-1.13.tar.gz && echo "the network is unstable.please check your network and run this script again"
+		wget --no-check-certificate -t 50 -O barnyard2-2-1.13.tar.gz https://codeload.github.com/firnsy/barnyard2/tar.gz/v2-1.13
+		break
+	done
+
+fi
+
 tar xvfz barnyard2-2-1.13.tar.gz && cd barnyard2-2-1.13/
 ./autogen.sh
 ./configure --with-mysql-libraries=/usr/lib64/mysql/ --with-mysql=/usr/bin/mysql
 make && make install
 
-
 # dwonload and install Suricata 
 cd /opt/ && wget -t 50 http://www.openinfosecfoundation.org/download/suricata-3.1.tar.gz
+if [ ! -f "suricata-3.1.tar.gz" ]; then
+	echo "the network is unreachable.please check your network and run this script again"
+else
+	fs1="`du -B 1M suricata-3.1.tar.gz | awk '{print $1}'`"
+	if [ $fs1 -lt 3 ]; then
+			rm -rf suricata-3.1.tar.gz && echo "the network is unstable.please check your network and run this script again"
+			
+	fi
+
+fi
 tar -xvzf suricata-3.1.tar.gz && cd suricata-3.1
 ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-nfqueue --enable-lua
 make && make install-full
+
+echo " congratulations!, snorby、suricata、barnyard2 is fullly installed. "
+echo " we will configure the configuration files automatically."
+echo " please wait a minute"
 
 # configure Suricata、Barnyard 2
 #把Barnyard 2安装源文件中的etc/barnyard2.conf文件拷贝到Suricata的配置目录
@@ -135,22 +195,28 @@ sed -i -e '\/var\/log\/suricata\/suricata.log/,/Step 4/s/no/yes/g' /etc/suricata
 # 匹配并替换在字符串unified2-alert， unified2.alert之间的内容，把enabled: no 改成 enabled: yes
 sed -i -e '/unified2-alert/,/unified2.alert/s/no/yes/g' /etc/suricata/suricata.yaml
 
-echo "you should do the following steps on your own~~*_*~~~"
-echo " the password of root in mysql is /yymm2011@!@"
-echo " mysql -u root -p "
-echo " create user 'snorbyroot'@'localhost' IDENTIFIED BY 'ym2011@2011my'; "
-echo " grant all privileges on snorby.* to 'snorbyroot'@'localhost' with grant option; "
-echo " flush privileges; "
+echo " congratulations!, all configurations is fullly finished. "
+echo " we will do modify and add a user for snorby in MySQL"
+
+TIMESTAMP=`date +%Y%m%d%H%M%S`  
+LOG=call_sql_${TIMESTAMP}.log  
+echo "Start execute sql statement at `date`." >>${LOG}  
+# execute sql stat  
+mysql -u root -p yymm2011@!@-e "  
+tee /tmp/temp.log  
+create user 'snorbyroot'@'localhost' IDENTIFIED BY 'ym2011@2011my';
+grant all privileges on snorby.* to 'snorbyroot'@'localhost' with grant option;
+flush privileges; 
+notee  
+quit"  
+
+echo -e "\n">>${LOG}  
+echo "below is output result.">>${LOG}  
+cat /tmp/temp.log>>${LOG}  
+echo "script executed successful.">>${LOG}  
+
 echo " please run the file: start-ids.sh to start the service "
 echo " have fun ! "
-
-
-
-
-
-
-
-
 
 
 
