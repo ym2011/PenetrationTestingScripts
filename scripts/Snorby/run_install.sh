@@ -1,19 +1,30 @@
 #!/usr/bin/env bash
 # author: ym2011
 # date: 2016-11-21
-# version: 0.0.5
+# version: 0.0.6
 echo "it will install snorby,suricata,barnyard2 automately. so take a coffee/n"
 
-yum install epel-release
+# 0x01 set the epel source
+yum -y install epel-release
+yum update
+rpm ivh http://repo.mysql.com//mysql57-community-release-el6-9.noarch.rpm
 yum -y install yum-utils
 yum clean all
 yum-complete-transaction --cleanup-only
 
 sleep 60
-# install dependences
-yum -y install gcc-c++ patch readline readline-devel zlib zlib-devel git-core libyaml-devel libffi-devel openssl-devel make libpcap-devel pcre-devel libyaml-devel file-devel jansson-devel nss-devel libcap-ng-devel libnet-devel tar libnetfilter_queue-devel lua-devel mysql-devel fontconfig-devel libX11-devel libXrender-devel libxml2-devel libxslt-devel qconf
 
-# dwonload and install ImageMagick
+# 2 install dependences
+yum -y install gcc-c++ patch readline readline-devel zlib zlib-devel git-core libyaml-devel libffi-devel openssl-devel make libpcap-devel pcre-devel libyaml-devel file-devel jansson-devel nss-devel libcap-ng-devel libnet-devel tar libnetfilter_queue-devel lua-devel fontconfig-devel libX11-devel libXrender-devel libxml2-devel libxslt-devel qconf
+
+# 3 configure mysql
+# yum install mysql mysql-devel mysql*
+yum -y install mysql-community-server
+service mysqld start
+chkconfig mysqld on
+mysqladmi -uroot -p`grep 'temporary password' /var/log/mysqld.log` password "yymm2011@!@"
+
+# 3 dwonload and install ImageMagick
 cd /opt/
 wget --no-check-certificate -t 50 https://www.imagemagick.org/download/ImageMagick-6.9.6-5.tar.gz
 if [ ! -f "ImageMagick-6.9.6-5.tar.gz" ]
@@ -63,11 +74,6 @@ tar zxvf libhtp-0.5.20.tar.gz && cd libhtp-0.5.20
 ./configure && make && make install
 sleep 10
 
-# configure mysql
-# yum install mysql mysql-devel mysql*
-service mysqld start
-chkconfig mysqld on       
-/usr/bin/mysqladmin -u root password 'yymm2011@!@'
 
 # install ruby
 cd /opt/
@@ -200,8 +206,8 @@ sed -i -e '/unified2-alert/,/unified2.alert/s/no/yes/g' /etc/suricata/suricata.y
 
 echo " congratulations!, all configurations is fullly finished. "
 echo " we will do modify and add a user for snorby in MySQL"
-# we add a user for snorby in MySQL.
 echo " if some steps went wrong and then do the command one by one. "
+# we add a user for snorby in MySQL.
 mysql -uroot -pyymm2011@!@ <<EOF
 create user 'snorbyroot'@'localhost' identified by 'ym2011@2011my';
 grant all privileges on snorby.* to 'snorbyroot'@'localhost' with grant option;
