@@ -24,6 +24,7 @@ yum -y install gcc-c++ patch readline readline-devel zlib zlib-devel git-core li
 # 0x03 install and configure mysql
 # yum install mysql mysql-devel mysql*
 yum -y install mysql-community-server
+yum -y install mysql-community-devel
 service mysqld start
 chkconfig mysqld on
 # warnig：we would change the password for root and add a user for snorby in MySQL.
