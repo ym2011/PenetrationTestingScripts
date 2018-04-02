@@ -1,0 +1,12 @@
+MySQL-python 1.2.4
+pymssql  2.1.1 
+impacket
+requests
+pysnmp 4.2.5
+pycrypto 2.6.1 
+paramiko 1.1.5 
+python-ldap 2.4.13 
+pymongo 2.4 
+psycopg2
+redis
+IPy

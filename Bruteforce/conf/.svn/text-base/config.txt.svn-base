@@ -1,0 +1,7 @@
+<task> 
+[global] 
+task_type = 1
+
+<log>
+[global]
+logfile = ./log/log.txt
