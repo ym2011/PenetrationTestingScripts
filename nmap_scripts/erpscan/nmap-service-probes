@@ -1,0 +1,605 @@
+# Authors: Mathieu Geli     <m.geli@erpscan.com>
+#          Michael Medvedev <m.medvedev@erpscan.com>
+#          Martin Gallo     <mgallo@coresecurity.com>
+#          Joris van de Vis <jvdvis@erp-sec.com>
+
+Probe TCP NULL q||
+totalwaitms 6000
+tcpwrappedms 3000
+match sapjoin m|SAP_Cluster_Manager| p/SAP Java Cluster Join Service/
+match jdwp m|^JDWP-Handshake$| p/Java Debug Wire Protocol/
+# quick and not complete SSH support (see nmap original probe for that)
+match ssh m/^SSH-([\d.]+)-OpenSSH[_-]([\S ]+)/i p/OpenSSH/ v/$2/ i/protocol $1/
+match ssh m/^(SSH-.*)/ p/SSH/ i/$1/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPSOAP q|GET / HTTP/1.0\r\n\r\n|
+ports 1128,50013,50113,50213,50313,50413,50513,50613,50713,50813,50913,51013,51113,51213,51313,51413,51513,51613,51713,51813,51913,52013,52113,52213,52313,52413,52513,52613,52713,52813,52913,53013,53113,53213,53313,53413,53513,53613,53713,53813,53913,54013,54113,54213,54313,54413,54513,54613,54713,54813,54913,55013,55113,55213,55313,55413,55513,55613,55713,55813,55913,56013,56113,56213,56313,56413,56513,56613,56713,56813,56913,57013,57113,57213,57313,57413,57513,57613,57713,57813,57913,58013,58113,58213,58313,58413,58513,58613,58713,58813,58913,59013,59113,59213,59313,59413,59513,59613,59713,59813,59913
+sslports 1129,50014,50114,50214,50314,50414,50514,50614,50714,50814,50914,51014,51114,51214,51314,51414,51514,51614,51714,51814,51914,52014,52114,52214,52314,52414,52514,52614,52714,52814,52914,53014,53114,53214,53314,53414,53514,53614,53714,53814,53914,54014,54114,54214,54314,54414,54514,54614,54714,54814,54914,55014,55114,55214,55314,55414,55514,55614,55714,55814,55914,56014,56114,56214,56314,56414,56514,56614,56714,56814,56914,57014,57114,57214,57314,57414,57514,57614,57714,57814,57914,58014,58114,58214,58314,58414,58514,58614,58714,58814,58914,59014,59114,59214,59314,59414,59514,59614,59714,59814
+rarity 9
+match sapstartservice m|SID=(\w+)&NR=(\d+)&HOST=(\S+)\r\nServer: gSOAP| p/SAP Management Console/ i/SID $1, NR $2/ h/$3/
+match sapstartservice m|Location: /sapmc/sapmc\.html\r\nServer: gSOAP| p/SAP Management Console/
+match saphostcontrol m|HOST=(\S+)\r\nServer: gSOAP| p/SAPHostControl/ h/$1/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPGW q|\x00\x00\x00@\x02\t\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00|
+ports 3300-3399,4800-4899
+rarity 9
+match sapgateway m|\x00\x00\x00\x00| p/SAP Gateway/ i/Monitoring mode disabled/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPGW q|\x00\x00\x00@\x02\x03\xac\x10\x00w\x00\x00\x00\x00startrfc\x00\x001100\x00\x00\x00\x00\x00\x00default_startrfc        \x06\xcb\xff\xff\x00\x00\x00\x00\x00\x00|
+ports 3300-3399,4800-4899
+rarity 9
+match sapgateway m|\x00\x00\x00\x40\x02\x03\xac\x10\x00\x77\x00\x00\x00\x00\x73\x74| p/SAP Gateway/
+
+##############################NEXT PROBE##############################
+# https://www.coresecurity.com/system/files/publications/2016/05/corelabs-nmap-service-probes.txt
+#
+#Probe TCP SAPMSDumpRelease q|\x00\x00\x00\xa2**MESSAGE**\x00\x04\x00MSG_SERVER\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x01-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x01\x03\x02\x00\x00\x00\x00\x00\x00\x08-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00|
+ports 3600-3699,3900-3999
+
+#match sapms m|^....\*\*MESSAGE\*\*.*Release no = (\d+).*System name = (\w+).*patch number = (\d+)|s p/SAP Message Server/ i/SID $2 (release $1, patch level $3)/
+#match sapms m|^\x00\x00..\*\*MESSAGE\*\*|s p/SAP Message Server/
+
+Probe TCP MessageServer q|\x00\x00\x00\x72**MESSAGE**\x00\x04\x00MSG_SERVER\x00\x00msxxi.c\x00%s: MsSndName failed\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x01\x2D\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x00\x00\x05\x00\x68\x03|
+ports 3600-3699,3900-3999
+rarity 9
+match sapms m|MESSAGE.*\W+(\w+)_(\w+)_(\w+)\s{16}| p/SAP Message Server/ h/$1/ i/SID $2, ID $3/
+match sapms m|MESSAGE| p/SAP Message Server/
+
+##############################NEXT PROBE##############################
+# FIXME: in some case (noip) we will fall into the tcpwrapped case
+Probe TCP SAPP4 q|v1\x18#p#4None:127.0.0.1:33170|
+ports 50004,50104,50204,50304,50404,50504,50604,50704,50804,50904,51004,51104,51204,51304,51404,51504,51604,51704,51804,51904,52004,52104,52204,52304,52404,52504,52604,52704,52804,52904,53004,53104,53204,53304,53404,53504,53604,53704,53804,53904,54004,54104,54204,54304,54404,54504,54604,54704,54804,54904,55004,55104,55204,55304,55404,55504,55604,55704,55804,55904,56004,56104,56204,56304,56404,56504,56604,56704,56804,56904,57004,57104,57204,57304,57404,57504,57604,57704,57804,57904,58004,58104,58204,58304,58404,58504,58604,58704,58804,58904,59004,59104,59204,59304,59404,59504,59604,59704,59804,59904
+rarity 9
+match sapjavap4 m|v1.*:(\d+\.\d+\.\d+\.\d+)| p/SAP JAVA P4/ i/Potential internal IP $1/
+match sapjavap4 m|v1| p/SAP JAVA P4/
+
+##############################NEXT PROBE##############################
+Probe TCP WEB q|GET / HTTP/1.0\r\n\r\n|
+ports 8000-8099,8080,8100-8199,50000,50100,50200,50300,50400,50500,50600,50700,50800,50900,51000,51100,51200,51300,51400,51500,51600,51700,51800,51900,52000,52100,52200,52300,52400,52500,52600,52700,52800,52900,53000,53100,53200,53300,53400,53500,53600,53700,53800,53900,54000,54100,54200,54300,54400,54500,54600,54700,54800,54900,55000,55100,55200,55300,55400,55500,55600,55700,55800,55900,56000,56100,56200,56300,56400,56500,56600,56700,56800,56900,57000,57100,57200,57300,57400,57500,57600,57700,57800,57900,58000,58100,58200,58300,58400,58500,58600,58700,58800,58900,59000,59100,59200,59300,59400,59500,59600,59700,59800,59900
+sslports 50001,50101,50201,50301,50401,50501,50601,50701,50801,50901,51001,51101,51201,51301,51401,51501,51601,51701,51801,51901,52001,52101,52201,52301,52401,52501,52601,52701,52801,52901,53001,53101,53201,53301,53401,53501,53601,53701,53801,53901,54001,54101,54201,54301,54401,54501,54601,54701,54801,54901,55001,55101,55201,55301,55401,55501,55601,55701,55801,55901,56001,56101,56201,56301,56401,56501,56601,56701,56801,56901,57001,57101,57201,57301,57401,57501,57601,57701,57801,57901,58001,58101,58201,58301,58401,58501,58601,58701,58801,58901,59001,59101,59201,59301,59401,59501,59601,59701,59801,59901,44300-44399,44400-44499,30030
+rarity 9
+match sapmshttp m|server: SAP Message Server, release (\d+) \((\w+)\)| p/SAP Message Server httpd/ v/release $1/ i/SID $2/
+match sapjavaweb m|SAP J2EE Engine/([\d.]+)| p/SAP JAVA EE Dispatcher HTTP/ v/$1/
+match sapjavaweb m|SAP J2EE Engine| p/SAP JAVA EE Dispatcher HTTP/
+match sapwebapp m|sap-system: (\w+).*SAP Web Application Server \(.*?\)| p/SAP Web Application Server/ v/$1/
+match sapjavaweb m|SAP NetWeaver Application Server ([\d.]+) / AS Java ([\d.]+)| p/SAP NetWeaver Application Server/ i/Kernel version $1, Java version $2/
+match sapicm m|SAP NetWeaver Application Server ([\d.]+) / ICM ([\d.]+)| p/SAP Internet Communication Manager/ v/$2/
+match sapnetweaver m|SAP NetWeaver Application Server \(([\d.]+);([\d.]+)\)| p/SAP Internet Communication Manager/ v/$2/
+match sapicm m|SAP Internet Communication Framework| p/SAP Internet Communication Manager/
+match sapicm m|<H2><b>403 Access denied</b></H2><br>You do not have the permissions to access this resource<br>| p/SAP Internet Communication Manager/
+match sapwebas m|SAP Web Application Server| p/SAP Web Application Server/
+match saphttpmsgserv m|msg_server \((\w+)\)| p/SAP HTTP Message Server/ i/SID $1/
+match sapwebmobile m|SAP Mobile Platform| p/SAP Mobile Platform/
+match sapsmtp m|(\S+) SAP (\S+) E?SMTP service ready| p/SAP SMTP Server/ h/$1/ v/$2/
+match sapxscontroller m|SAP SE| p/SAP XSA Controller/
+
+##############################NEXT PROBE##############################
+Probe TCP HANAXS q|GET / HTTP/1.0\r\n\r\n|
+ports 8000-8099
+sslports 4300-4399
+rarity 9
+match saphanaxs m|XSEngine| p/SAP HANA XS Engine/
+
+##############################NEXT PROBE##############################
+Probe TCP HANAXSA q|GET / HTTP/1.0\r\n\r\n|
+ports 50000-50005
+rarity 9
+match hanatomcat m|WWW-Authenticate: Basic realm="([\w ]+)| p/SAP HANA XSA/ i/basic "$1"/
+match hanatomcat m|WWW-Authenticate: Bearer realm="([\w ]+)| p/SAP HANA XSA/ i/bearer $1/
+match hanasinopia m|X-Powered-By: ([\w+ ]+)| p/SAP HANA XSA $1/
+
+##############################NEXT PROBE##############################
+Probe TCP HANAXSC q|GET /v2/info HTTP/1.0\r\nHost: 127.0.0.1:30030\r\n\r\n|
+sslports 30030
+rarity 9
+match xscontroller2 m|build":"(.*?)".*"controllerEndpoint":"https://(.*?):30030.*"databaseType":"(.*?)","databaseInfo":"(.*?)".*"apps":(\d+),"services":(\d+)| i/HDB_VERSION:$4, HDB_TYPE: $3/ v/$1/ h/$2/ p/XSA APPS:$5 SERVICES:$6/
+match xscontroller1 m|build":"(.*?)".*"controllerEndpoint":"https://(.*?):30030.*"databaseType":"(.*?)","limits".*"apps":(\d+),"services":(\d+)| i/HDB_TYPE: $3/ v/$1/ h/$2/ p/XSA APPS:$4 SERVICES:$5/
+
+
+
+##############################NEXT PROBE##############################
+Probe TCP SAPHTTPP4 q|GET / HTTP/1.0\r\nHost: 1.1.1.1:1\r\nHttpTunneling: 1\r\nIdentificator: .E\r\nLocal-IP: \r\nLocal-port: 1\r\nContent-Length: 8\r\n\r\n\r\n\r\n\r\n\r\n|
+ports 50005,50105,50205,50305,50405,50505,50605,50705,50805,50905,51005,51105,51205,51305,51405,51505,51605,51705,51805,51905,52005,52105,52205,52305,52405,52505,52605,52705,52805,52905,53005,53105,53205,53305,53405,53505,53605,53705,53805,53905,54005,54105,54205,54305,54405,54505,54605,54705,54805,54905,55005,55105,55205,55305,55405,55505,55605,55705,55805,55905,56005,56105,56205,56305,56405,56505,56605,56705,56805,56905,57005,57105,57205,57305,57405,57505,57605,57705,57805,57905,58005,58105,58205,58305,58405,58505,58605,58705,58805,58905,59005,59105,59205,59305,59405,59505,59605,59705,59805,59905
+rarity 9
+match sapjavahttpp4 m|HTTP/1.0 200 OK\r\nServer: SAP J2EE Engine| p/SAP JAVA P4 over HTTP tunneling/
+match sapjavahttpp4 m|\x15\x03\x00\x00\x02\x02\x28| p/SAP JAVA P4 over SSL/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPjava q|\r\n|
+ports 50008,50108,50208,50308,50408,50508,50608,50708,50808,50908,51008,51108,51208,51308,51408,51508,51608,51708,51808,51908,52008,52108,52208,52308,52408,52508,52608,52708,52808,52908,53008,53108,53208,53308,53408,53508,53608,53708,53808,53908,54008,54108,54208,54308,54408,54508,54608,54708,54808,54908,55008,55108,55208,55308,55408,55508,55608,55708,55808,55908,56008,56108,56208,56308,56408,56508,56608,56708,56808,56908,57008,57108,57208,57308,57408,57508,57608,57708,57808,57908,58008,58108,58208,58308,58408,58508,58608,58708,58808,58908,59008,59108,59208,59308,59408,59508,59608,59708,59808,59908
+rarity 9
+match sapjavatelnet m|\xff\xfb\x01\xff\xfb\x03\xff\xfd\x1f| p/SAP JAVA Telnet/
+match saplogviewer m|^READY#Logviewer#([\d.]+)\r\n| p/SAP NetWeaver Logviewer/ v/$1/ cpe:/a:sap:netweaver_logviewer:$1/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPJMS q|\x00\x00\x00\x00|
+ports 50010,50110,50210,50310,50410,50510,50610,50710,50810,50910,51010,51110,51210,51310,51410,51510,51610,51710,51810,51910,52010,52110,52210,52310,52410,52510,52610,52710,52810,52910,53010,53110,53210,53310,53410,53510,53610,53710,53810,53910,54010,54110,54210,54310,54410,54510,54610,54710,54810,54910,55010,55110,55210,55310,55410,55510,55610,55710,55810,55910,56010,56110,56210,56310,56410,56510,56610,56710,56810,56910,57010,57110,57210,57310,57410,57510,57610,57710,57810,57910,58010,58110,58210,58310,58410,58510,58610,58710,58810,58910,59010,59110,59210,59310,59410,59510,59610,59710,59810,59910
+rarity 9
+match sapjms m|Packet length| p/SAP Java Message Service/
+match sapjms m|Packet with i| p/SAP Java Message Service/
+
+##############################NEXT PROBE##############################
+# P_SAPJAVAENQ
+Probe TCP SAPJAVAENQ q|\x00\x00\x00\x56\xab\xcd\xe1\x23\x00\x00\x00\x00\x00\x00\x00\x56\x00\x00\x00\x56\x06\x01\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x01\x00\x04\x00\x00\x00\x00\x00\x03sap730_4016_1\x00\x00\x00\x00\x02\x00\x00\x00\x3b\x00\x00\x00\x05\x00\x00\x00\x03\x00\x00\x00\x06\x00\x00\x00\x04\x00\x00\x00\x01|
+ports 3200-3299
+rarity 9
+match sapjavaenq m|\W+(\w+)_IOThread_| p/SAP Enqueue Server/ h/$1/
+
+##############################NEXT PROBE##############################
+# P_NIPING
+Probe TCP SAPNIPING q|\x00\x00\x00\x03SAP|
+ports 3298
+rarity 9
+match sapniping m|\x00\x00\x00\x03SAP| p/SAP NIPing/
+
+##############################NEXT PROBE##############################
+# P_SAProuter
+Probe TCP SAProuter q|\x00\x00\x00\x00|
+ports 3200-3299
+rarity 9
+match saprouter m|SAProuter ([\d.]+) on '(\w+)'| p/SAProuter/ v/$1/ h/$2/
+match saprouter m|SAProuter| p/SAProuter/
+
+##############################NEXT PROBE##############################
+# P_SAPIGS
+Probe TCP SAPIGS q|GET /a HTTP/1.0\r\n\r\n|
+ports 40080,40180,40280,40380,40480,40580,40680,40780,40880,40980,41080,41180,41280,41380,41480,41580,41680,41780,41880,41980,42080,42180,42280,42380,42480,42580,42680,42780,42880,42980,43080,43180,43280,43380,43480,43580,43680,43780,43880,43980,44080,44180,44280,44380,44480,44580,44680,44780,44880,44980,45080,45180,45280,45380,45480,45580,45680,45780,45880,45980,46080,46180,46280,46380,46480,46580,46680,46780,46880,46980,47080,47180,47280,47380,47480,47580,47680,47780,47880,47980,48080,48180,48280,48380,48480,48580,48680,48780,48880,48980,49080,49180,49280,49380,49480,49580,49680,49780,49880,49980
+rarity 9
+match sapigs m|SAP Internet Graphics Server| p/SAP Internet Graphics Server/
+
+##############################NEXT PROBE##############################
+# TREX (old) packet version
+Probe TCP SAPTREXGEN q|I\x00\x08\x10\x18\x0b\x00\x00\x00\x01\x02\x05%\x00\x00\x00\x00__INT__PINGD\x00\x00\x00\x88\x00\x00\x00\x00\x07\xff\xff\xff\xff\xff\xff\xff\xff\x17|
+ports 30001,30101,30201,30301,30401,30501,30601,30701,30801,30901,31001,31101,31201,31301,31401,31501,31601,31701,31801,31901,32001,32101,32201,32301,32401,32501,32601,32701,32801,32901,33001,33101,33201,33301,33401,33501,33601,33701,33801,33901,34001,34101,34201,34301,34401,34501,34601,34701,34801,34901,35001,35101,35201,35301,35401,35501,35601,35701,35801,35901,36001,36101,36201,36301,36401,36501,36601,36701,36801,36901,37001,37101,37201,37301,37401,37501,37601,37701,37801,37901,38001,38101,38201,38301,38401,38501,38601,38701,38801,38901,39001,39101,39201,39301,39401,39501,39601,39701,39801,39901
+rarity 9
+match saptrex m|\xc7\xff\x17| p/SAP TREX Name server/
+
+# HANA trexnet packet detection (Working for HANA trexnet from SPS7 to SPS12)
+Probe TCP SAPHANATREX q|\x3f\x00\x08\x10\x18\x09\x00\x00\x00\x01\x02\x07\x25\x00\x00\x00\x63\x6f\x72\x65\x2f\x70\x69\x6e\x67\x44\x02\x00\x00\x00\x00\x00\x00\xd6\x00\x00\x00\x05\xfd\xff\xff\xff\x0b\xff\xff\xff\xff\xff\xff\xff\xff\x05\xff\xff\xff\xff\x05\xff\xff\xff\xff\x05\xff\xff\xff\xff\x05\xff\xff\xff\xff\x05\xff\xff\xff\xff\x07\xff\xff\xff\xff\xff\xff\xff\xff\x07\xff\xff\xff\xff\xff\xff\xff\xff\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x05\xff\xff\xff\xff\x01\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x09\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x01\x00\x01\x00\x01\x00\x0b\x98\x7d\x00\x00\x00\x00\x00\x00\x05\x00\x04\x00\x00\x06\x01\x00\x00\x00\x06\x43\x7d\x00\x00\x06\x98\x7d\x00\x00\x0b\x04\x00\x00\x00\x00\x00\x00\x00\x09\x09\x00\x00\x00\x68\x61\x6e\x61\x73\x65\x72\x76\x72\x09\x06\x00\x00\x00\x70\x79\x74\x68\x6f\x6e\x09\x01\x00\x00\x00\x30\x05\x00\x00\x00\x00\x07\x50\x49\x4e\x47\x50\x4f\x4e\x47\x17|
+ports 30001,30101,30201,30301,30401,30501,30601,30701,30801,30901,31001,31101,31201,31301,31401,31501,31601,31701,31801,31901,32001,32101,32201,32301,32401,32501,32601,32701,32801,32901,33001,33101,33201,33301,33401,33501,33601,33701,33801,33901,34001,34101,34201,34301,34401,34501,34601,34701,34801,34901,35001,35101,35201,35301,35401,35501,35601,35701,35801,35901,36001,36101,36201,36301,36401,36501,36601,36701,36801,36901,37001,37101,37201,37301,37401,37501,37601,37701,37801,37901,38001,38101,38201,38301,38401,38501,38601,38701,38801,38901,39001,39101,39201,39301,39401,39501,39601,39701,39801,39901,30002,30102,30202,30302,30402,30502,30602,30702,30802,30902,31002,31102,31202,31302,31402,31502,31602,31702,31802,31902,32002,32102,32202,32302,32402,32502,32602,32702,32802,32902,33002,33102,33202,33302,33402,33502,33602,33702,33802,33902,34002,34102,34202,34302,34402,34502,34602,34702,34802,34902,35002,35102,35202,35302,35402,35502,35602,35702,35802,35902,36002,36102,36202,36302,36402,36502,36602,36702,36802,36902,37002,37102,37202,37302,37402,37502,37602,37702,37802,37902,38002,38102,38202,38302,38402,38502,38602,38702,38802,38902,39002,39102,39202,39302,39402,39502,39602,39702,39802,39902,30006,30106,30206,30306,30406,30506,30606,30706,30806,30906,31006,31106,31206,31306,31406,31506,31606,31706,31806,31906,32006,32106,32206,32306,32406,32506,32606,32706,32806,32906,33006,33106,33206,33306,33406,33506,33606,33706,33806,33906,34006,34106,34206,34306,34406,34506,34606,34706,34806,34906,35006,35106,35206,35306,35406,35506,35606,35706,35806,35906,36006,36106,36206,36306,36406,36506,36606,36706,36806,36906,37006,37106,37206,37306,37406,37506,37606,37706,37806,37906,38006,38106,38206,38306,38406,38506,38606,38706,38806,38906,39006,39106,39206,39306,39406,39506,39606,39706,39806,39906
+rarity 9
+match saphanatrex12 m|\x07PINGPONG\x18\x45\xff| p/SAP HANA Trexnet Name Server/ v/SPS12/
+match saphanatrex11 m|PoolThread.cpp:389| p/SAP HANA Trexnet Name Server/ v/SPS11/
+match saphanatrex10 m|PoolThread.cpp:402| p/SAP HANA Trexnet Name Server/ v/SPS10/
+match saphanatrex09 m|PoolThread.cpp:274| p/SAP HANA Trexnet Name Server/ v/SPS9/
+match saphanatrex08 m|PoolThread.cpp:265| p/SAP HANA Trexnet Name Server/ v/SPS8/
+match saphanatrex07 m|PoolThread.cpp:278| p/SAP HANA Trexnet Name Server/ v/SPS7/
+
+Probe TCP SAPTREXGEN q|I\x00\x08\x10\x18\x0b\x00\x00\x00\x01\x02\x05%\x00\x00\x00\x00__INT__PINGD\x00\x00\x00\x88\x00\x00\x00\x00\x07\xff\xff\xff\xff\xff\xff\xff\xff\x17|
+ports 30002,30102,30202,30302,30402,30502,30602,30702,30802,30902,31002,31102,31202,31302,31402,31502,31602,31702,31802,31902,32002,32102,32202,32302,32402,32502,32602,32702,32802,32902,33002,33102,33202,33302,33402,33502,33602,33702,33802,33902,34002,34102,34202,34302,34402,34502,34602,34702,34802,34902,35002,35102,35202,35302,35402,35502,35602,35702,35802,35902,36002,36102,36202,36302,36402,36502,36602,36702,36802,36902,37002,37102,37202,37302,37402,37502,37602,37702,37802,37902,38002,38102,38202,38302,38402,38502,38602,38702,38802,38902,39002,39102,39202,39302,39402,39502,39602,39702,39802,39902
+rarity 9
+match saptrex m|\xc7\xff\x17| p/SAP TREX Preprocessor/
+
+Probe TCP SAPTREXGEN q|I\x00\x08\x10\x18\x0b\x00\x00\x00\x01\x02\x05%\x00\x00\x00\x00__INT__PINGD\x00\x00\x00\x88\x00\x00\x00\x00\x07\xff\xff\xff\xff\xff\xff\xff\xff\x17|
+ports 30003,30103,30203,30303,30403,30503,30603,30703,30803,30903,31003,31103,31203,31303,31403,31503,31603,31703,31803,31903,32003,32103,32203,32303,32403,32503,32603,32703,32803,32903,33003,33103,33203,33303,33403,33503,33603,33703,33803,33903,34003,34103,34203,34303,34403,34503,34603,34703,34803,34903,35003,35103,35203,35303,35403,35503,35603,35703,35803,35903,36003,36103,36203,36303,36403,36503,36603,36703,36803,36903,37003,37103,37203,37303,37403,37503,37603,37703,37803,37903,38003,38103,38203,38303,38403,38503,38603,38703,38803,38903,39003,39103,39203,39303,39403,39503,39603,39703,39803,39903,30016,30116,30216,30316,30416,30516,30616,30716,30816,30916,31016,31116,31216,31316,31416,31516,31616,31716,31816,31916,32016,32116,32216,32316,32416,32516,32616,32716,32816,32916,33016,33116,33216,33316,33416,33516,33616,33716,33816,33916,34016,34116,34216,34316,34416,34516,34616,34716,34816,34916,35016,35116,35216,35316,35416,35516,35616,35716,35816,35916,36016,36116,36216,36316,36416,36516,36616,36716,36816,36916,37016,37116,37216,37316,37416,37516,37616,37716,37816,37916,38016,38116,38216,38316,38416,38516,38616,38716,38816,38916,39016,39116,39216,39316,39416,39516,39616,39716,39816,39916
+rarity 9
+match saptrex m|\xc7\xff\x17| p/SAP TREX Index server/
+
+Probe TCP SAPTREXGEN q|I\x00\x08\x10\x18\x0b\x00\x00\x00\x01\x02\x05%\x00\x00\x00\x00__INT__PINGD\x00\x00\x00\x88\x00\x00\x00\x00\x07\xff\xff\xff\xff\xff\xff\xff\xff\x17|
+ports 30004,30104,30204,30304,30404,30504,30604,30704,30804,30904,31004,31104,31204,31304,31404,31504,31604,31704,31804,31904,32004,32104,32204,32304,32404,32504,32604,32704,32804,32904,33004,33104,33204,33304,33404,33504,33604,33704,33804,33904,34004,34104,34204,34304,34404,34504,34604,34704,34804,34904,35004,35104,35204,35304,35404,35504,35604,35704,35804,35904,36004,36104,36204,36304,36404,36504,36604,36704,36804,36904,37004,37104,37204,37304,37404,37504,37604,37704,37804,37904,38004,38104,38204,38304,38404,38504,38604,38704,38804,38904,39004,39104,39204,39304,39404,39504,39604,39704,39804,39904
+rarity 9
+match saptrex m|\xc7\xff\x17| p/SAP TREX Queue server/
+
+Probe TCP SAPTREXHTTP q|GET /TREX?CMD=PING HTTP/1.0\r\n\r\n|
+ports 30005,30105,30205,30305,30405,30505,30605,30705,30805,30905,31005,31105,31205,31305,31405,31505,31605,31705,31805,31905,32005,32105,32205,32305,32405,32505,32605,32705,32805,32905,33005,33105,33205,33305,33405,33505,33605,33705,33805,33905,34005,34105,34205,34305,34405,34505,34605,34705,34805,34905,35005,35105,35205,35305,35405,35505,35605,35705,35805,35905,36005,36105,36205,36305,36405,36505,36605,36705,36805,36905,37005,37105,37205,37305,37405,37505,37605,37705,37805,37905,38005,38105,38205,38305,38405,38505,38605,38705,38805,38905,39005,39105,39205,39305,39405,39505,39605,39705,39805,39905
+rarity 9
+match saptrexhttp m|OK Server Connection| p/SAP TREX HTTP Server/
+
+Probe TCP SAPTREXALERT q|GET / HTTP/1.0\r\n\r\n|
+ports 30011,30111,30211,30311,30411,30511,30611,30711,30811,30911,31011,31111,31211,31311,31411,31511,31611,31711,31811,31911,32011,32111,32211,32311,32411,32511,32611,32711,32811,32911,33011,33111,33211,33311,33411,33511,33611,33711,33811,33911,34011,34111,34211,34311,34411,34511,34611,34711,34811,34911,35011,35111,35211,35311,35411,35511,35611,35711,35811,35911,36011,36111,36211,36311,36411,36511,36611,36711,36811,36911,37011,37111,37211,37311,37411,37511,37611,37711,37811,37911,38011,38111,38211,38311,38411,38511,38611,38711,38811,38911,39011,39111,39211,39311,39411,39511,39611,39711,39811,39911
+rarity 9
+match saptrex m|Server: ([\w./ ]+)| p/SAP TREX AlertServer/ i/$1/
+
+Probe TCP SAPTREXRFC q|I\x00\x08\x10\x18\x0b\x00\x00\x00\x01\x02\x05%\x00\x00\x00\x00__INT__PINGD\x00\x00\x00\x88\x00\x00\x00\x00\x07\xff\xff\xff\xff\xff\xff\xff\xff\x17|
+ports 30007,30107,30207,30307,30407,30507,30607,30707,30807,30907,31007,31107,31207,31307,31407,31507,31607,31707,31807,31907,32007,32107,32207,32307,32407,32507,32607,32707,32807,32907,33007,33107,33207,33307,33407,33507,33607,33707,33807,33907,34007,34107,34207,34307,34407,34507,34607,34707,34807,34907,35007,35107,35207,35307,35407,35507,35607,35707,35807,35907,36007,36107,36207,36307,36407,36507,36607,36707,36807,36907,37007,37107,37207,37307,37407,37507,37607,37707,37807,37907,38007,38107,38207,38307,38407,38507,38607,38707,38807,38907,39007,39107,39207,39307,39407,39507,39607,39707,39807,39907
+rarity 9
+match saptrex m|\xc7\xff\x17| p/SAP TREX RFC server/
+
+Probe TCP SAPTREXCRUISE q|I\x00\x08\x10\x18\x0b\x00\x00\x00\x01\x02\x05%\x00\x00\x00\x00__INT__PINGD\x00\x00\x00\x88\x00\x00\x00\x00\x07\xff\xff\xff\xff\xff\xff\xff\xff\x17|
+ports 30008,30108,30208,30308,30408,30508,30608,30708,30808,30908,31008,31108,31208,31308,31408,31508,31608,31708,31808,31908,32008,32108,32208,32308,32408,32508,32608,32708,32808,32908,33008,33108,33208,33308,33408,33508,33608,33708,33808,33908,34008,34108,34208,34308,34408,34508,34608,34708,34808,34908,35008,35108,35208,35308,35408,35508,35608,35708,35808,35908,36008,36108,36208,36308,36408,36508,36608,36708,36808,36908,37008,37108,37208,37308,37408,37508,37608,37708,37808,37908,38008,38108,38208,38308,38408,38508,38608,38708,38808,38908,39008,39108,39208,39308,39408,39508,39608,39708,39808,39908
+rarity 9
+match saptrex m|\xc7\xff\x17| p/SAP TREX Cruise server/
+
+
+##############################NEXT PROBE##############################
+Probe TCP SAPLOGVIEWER q|JRMI\x00\x02K|
+ports 1099, 5465, 26000
+rarity 9
+match saplogviewer m|N\x00| p/SAP Logviewer Standalone/
+match saplogviewer m|\x52\x45\x41\x44\x59\x23| p/SAP Logviewer Standalone Socket/
+match saplogviewer m|\x76\x31| p/SAP Logviewer Standalone Socket/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPHANAHDB q|\xFF\xFF\xFF\xFF\x04\x00\x14\x04\x00\x01\x00\x01\x01\x01|
+ports 30015,30041-39998
+
+rarity 9
+match saphanahdb m|\x04\x01\x00\x00\x00| p/SAP HANA HDB/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPMOBILE q|GET / HTTP/1.0\r\n\r\n|
+ports 5001
+rarity 9
+match sapmobile m|WWW-Authenticate: Basic realm="Unwired Platform"| p/SAP Mobile Platform/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPMPSP q|SAP|
+sslports 8083
+rarity 9
+match sapmpsp m|Certificate| p/SAP Mobile Platform Administration Secure Port/
+
+#
+# https://www.coresecurity.com/system/files/publications/2016/05/corelabs-nmap-service-probes.txt
+#
+##############################NEXT PROBE##############################
+Probe TCP SAPDIAG q|\x00\x00\x01\x06\xff\xff\xff\xff\n\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff>\x00\x00\x00\x00\xff\xff\xff\xff\xff\xff                                        \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00                    \x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x10\x04\x02\x00\x0c\x00\x00\x00\x80\x00\x00\x04L\x00\x00\x13\x89\x10\x04\x0b\x00 \xff\x7f\xfe-\xda\xb77\xd6t\x08~\x13\x05\x97\x15\x97\xef\xf2?\x8d\x07p\xff\x0f\x00\x00\x00\x00\x00\x00\x00\x00|
+ports 3200-3299
+rarity 9
+softmatch sapgui m|^\x00\x00..\x00\x00\x11\x00\x00\x01\x00\x00.*\x10\x06\x02..(\w\w\w).*\x10\x06\x03..([\w._-]+).*\x10\x06\x29..(\d+)\x00(\d+)\x00(\d+)\x00|s p/SAP Dispatcher/ i/DB name $1/ h/$2/ v/release $4, patch level $5, database release $3/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPDISP q|\x00\x00\x00\x00|
+ports 3200-3299
+rarity 9
+match sapdisp m|DPTMMSG| p/SAP ABAP Dispatcher/
+
+
+##############################NEXT PROBE##############################
+# FIXME: do version grabbing when COMMAND=version is honored.
+Probe TCP ORACLETNS q|\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7f\xff\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x004\xe6\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))|
+ports 1520-1599
+rarity 9
+match oracledb m|DESCRIPTION.*ERROR| p/Oracle TNS Listener/
+match oracledb m|TNSLSNR for (.*?): Version ([\d.]+)| p/Oracle TNS Listener/ v/$2/ o/$1/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPPCOMGT q|GET /PCoManagement?wsdl HTTP/1.0\r\n\r\n|
+ports 50050
+rarity 9
+match sappcomgt m|200 OK| p/SAP Plant Connectivity Management SOAP/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPXMII q|<?xml version="1.0" encoding="UTF-8"?><pco:request xmlns:pco="uri:sap-pco-request" pco:version="1.0"><pco:features/></pco:request>|
+ports 9000-9010
+rarity 9
+match sapxmii m|xMII| p/SAP xMII query agent/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPBOCMS q|aps|
+ports 6400
+rarity 9
+match sapbocms m|seagatesoftware| p/SAP Business Object CMS/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPBOWEB4 q|POST /BOE/CMC/ HTTP/1.0\r\n\r\n|
+ports 8080
+rarity 9
+match sapboweb m|200 OK| p/SAP Business Object Web Frontend/ v/4.x/
+
+Probe TCP SAPBOWEB3 q|GET /CmcApp/logon.faces HTTP/1.0\r\n\r\n|
+ports 8080
+rarity 9
+match sapboweb m|200 OK| p/SAP Business Object Web Frontend/ v/3.x/
+
+##############################NEXT PROBE##############################
+#Probe TCP SAPASE q|\x00\x02\x00\x02\x00\x00\x00\x00|
+#ports 4901-4999
+#rarity 9
+#match sapase m|Login failed| p/SAP ASE Database/
+
+##############################NEXT PROBE##############################
+Probe TCP RPCCheck q|\x80\0\0\x28\x72\xFE\x1D\x13\0\0\0\0\0\0\0\x02\0\x01\x86\xA0\0\x01\x97\x7C\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0|
+ports 4901-4999
+match ase-adaptive m|^\0\x01\0\x08\0\0\x00\0$| p/SAP ASE DB/ o/Windows/ cpe:/a:sybase:adaptive_server/ cpe:/o:microsoft:windows/a
+match ase-backup m|^\0\x01\0\x08\0\0\x01\0$| p/SAP ASE DB backup/ o/Windows/ cpe:/a:sybase:backup_server/ cpe:/o:microsoft:windows/a
+
+##############################NEXT PROBE##############################
+####        BEWARE THIS PROBE WILL WORK WITH NMAP PATCHED !!      ####
+######################################################################
+# line buffer is 2048 only, needs to be extended to 4096 for this probe to be parsed
+# diff --git a/service_scan.cc b/service_scan.cc
+# index c424314..435c1f8 100644
+# --- a/service_scan.cc
+# +++ b/service_scan.cc
+# @@ -1265,7 +1265,7 @@ void ServiceProbe::addMatch(const char *match, int lineno) {
+#     (servicematch) which use this */
+#  void parse_nmap_service_probe_file(AllProbes *AP, char *filename) {
+#    ServiceProbe *newProbe = NULL;
+# -  char line[2048];
+# +  char line[4096];
+#
+#
+#Probe TCP SAPASE q|\x02\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x002936\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x03\x01\x06\n\t\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00probe\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05DDD\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+#splitted here to avoid nmap bug (even if line is commented)...
+#\x00\x00\x00\x00\x00\x00\x00\x02\x05\x00\x00\x00CT-Library\n\x0f\x07\x00\r\x00\r\x11\x00s_english\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x01\x00k\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x02\x00\x08\x00\x00\x00\x00\x00\x00\x00\x00utf8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00512\x00\x00\x00\x03\x00\x00\x00\x00\xe2 \x00\x01\x0e\x01<\xe2\xf9\xb5\x87\xea\xbbm\x7f\xff\xff\xff\xfe\x02\x0e\x00\x00\x00\x00\x00\x18b\x00\x00\xa2h\x00\x00\x00|
+#ports 4901-4999
+#rarity 9
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x10\x00\x02\x05| p/SAP ASE Database ($1)/ v/16.0.2.5/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x10\x00\x02\x04| p/SAP ASE Database ($1)/ v/16.0.2.4/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x10\x00\x02\x00| p/SAP ASE Database ($1)/ v/16.0.2.0/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x0f\x07\x00\x00| p/SAP ASE Database ($1)/ v/15.7.0.0/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x0f\x07| p/SAP ASE Database ($1)/ v/15.7.x/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x10\x00\x02| p/SAP ASE Database ($1)/ v/16.0.2.x/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x10| p/SAP ASE Database ($1)/ v/16.x/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE\x0f| p/SAP ASE Database ($1)/ v/15.x/
+#match sapase m|password on the network\.\n\x03(\w+)...........\x03ASE| p/SAP ASE Database ($1)/ v/unknown/
+#match sapase m|\x0f\x01\x00\x3e\x00\x00\x00\x00\xad\x0d\x00\x07\x05\x00\x00\x00\x03ASE| p/SAP ASE Database (vulnerable to probe login)/
+#match sapase m|^\x03ASE| p/SAP ASE Database (vulnerable to probe login)/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPSDMADM q|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x31\x31|
+ports 50017,50117,50217,50317,50417,50517,50617,50717,50817,50917,51017,51117,51217,51317,51417,51517,51617,51717,51817,51917,52017,52117,52217,52317,52417,52517,52617,52717,52817,52917,53017,53117,53217,53317,53417,53517,53617,53717,53817,53917,54017,54117,54217,54317,54417,54517,54617,54717,54817,54917,55017,55117,55217,55317,55417,55517,55617,55717,55817,55917,56017,56117,56217,56317,56417,56517,56617,56717,56817,56917,57017,57117,57217,57317,57417,57517,57617,57717,57817,57917,58017,58117,58217,58317,58417,58517,58617,58717,58817,58917,59017,59117,59217,59317,59417,59517,59617,59717,59817,59917
+rarity 9
+match sapsdmadmin m|         334Sorry| p/SAP SDM Administration/
+
+##############################NEXT PROBE##############################
+Probe TCP SAPSDMGUI q|\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x31\x31|
+ports 50018,50118,50218,50318,50418,50518,50618,50718,50818,50918,51018,51118,51218,51318,51418,51518,51618,51718,51818,51918,52018,52118,52218,52318,52418,52518,52618,52718,52818,52918,53018,53118,53218,53318,53418,53518,53618,53718,53818,53918,54018,54118,54218,54318,54418,54518,54618,54718,54818,54918,55018,55118,55218,55318,55418,55518,55618,55718,55818,55918,56018,56118,56218,56318,56418,56518,56618,56718,56818,56918,57018,57118,57218,57318,57418,57518,57618,57718,57818,57918,58018,58118,58218,58318,58418,58518,58618,58718,58818,58918,59018,59118,59218,59318,59418,59518,59618,59718,59818,59918
+rarity 9
+match sapsdmgui m|<Error><Er>This| p/SAP SDM GUI/
+
+
+##############################NEXT PROBE##############################
+Probe TCP SAPSMTP q|HEAD / HTTP/1.0\r\n\r\n|
+ports 25
+rarity 9
+match sapsmtp m|(\S+) SAP (\S+) E?SMTP service ready| p/SAP SMTP Server/ h/$1/ v/$2/
+
+##############################NEXT PROBE##############################
+Probe TCP P4IIOP q|GIOP\x01\x00\x00\x00\x00\x00\x00\xf8\x00\x00\x00\x03\x00\x00\x00\x11\x00\x00\x00\x02\x00\x02\x00\x00NEO\x00\x00\x00\x00\x02\x00\x14\x00\x00\x00\x00\x00\x06\x00\x00\x00\xa6\x00\x00\x00\x00\x00\x00\x00(IDL:omg.org/SendingContext/CodeBase:0.0\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00j\x00\x01\x02\x00\x00\x00\x00\n127.0.1.1\x00\x9bF\x00\x00\x00\x19\xaf\xab\xcb\x00\x00\x00\x00\x02%a2+\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x01\x00\x00\x00\x02\x05\x01\x00\x01\x00\x01\x00 \x00\x01\x01\t\x00\x00\x00\x01\x00\x01\x01\x00\x00\x00\x00&\x00\x00\x00\x02\x00\x02\x00\x00\x00\x00\x00\x05\x01\x00\x00\x00\x00\x00\x00\x04INIT\x00\x00\x00\x04get\x00\x00\x00\x00\x00\x00\x00\x00\x0cNameService\x00|
+ports 50007,50107,50207,50307,50407,50507,50607,50707,50807,50907,51007,51107,51207,51307,51407,51507,51607,51707,51807,51907,52007,52107,52207,52307,52407,52507,52607,52707,52807,52907,53007,53107,53207,53307,53407,53507,53607,53707,53807,53907,54007,54107,54207,54307,54407,54507,54607,54707,54807,54907,55007,55107,55207,55307,55407,55507,55607,55707,55807,55907,56007,56107,56207,56307,56407,56507,56607,56707,56807,56907,57007,57107,57207,57307,57407,57507,57607,57707,57807,57907,58007,58107,58207,58307,58407,58507,58607,58707,58807,58907,59007,59107,59207,59307,59407,59507,59607,59707,59807
+rarity 9
+match sapp4iiop m|IDL:omg.org/SendingContext/CodeBase:1.0.*?(\d+\.\d+\.\d+\.\d+)| p/SAP P4 over IIOP/ i/Potential internal IP $1/
+
+##############################NEXT PROBE##############################
+Probe TCP POSXPRESSDATA q|lalala|
+ports 2202
+rarity 9
+match xpresserver m|201 XPRESS SERVER (\d+\.\d+\.\d+)+ (SP\d+\s)?(Build\s\d+\s)?([\w-]+)?| p/SAP XPRESS Server/ v/Version $1 $2 $3/ h/$4/
+
+
+##############################NEXT PROBE##############################
+Probe TCP POSXPRESSCLIENT q|{D0045}\x14\x64\x00\x0a\x00\x02\x16\x00\x03\x00\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xd9\x88\x64\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00|
+ports 2200
+rarity 9
+match xpresserverclinet m|{D\d\d\d\d}| p/SAP XPRESS Server client's port/
+
+##############################NEXT PROBE##############################
+# Added this one that clashes with SAP 33NN port rules for gateway   #
+######################################################################
+
+Probe TCP MSRDP q|\x03\x00\x00\x0b\x06\xe0\x00\x00\x00\x00\x00\x00|
+ports 3389
+rarity 9
+match ms-wbt-server m#^\x03\x00\x00(\x0b|\x17|\x11)# p/Microsoft Terminal Service/
+
+
+############################################
+# _____ _     ____    ______ ____  _       #
+#|_   _| |   / ___|  / / ___/ ___|| |      #
+#  | | | |   \___ \ / /\___ \___ \| |      #
+#  | | | |___ ___) / /  ___) |__) | |___   #
+#  |_| |_____|____/_/  |____/____/|_____|  #
+#Ripped from official nmap-services-probes #
+#without that ssl detection on non standard#
+#ports will fail badly.                    #
+############################################
+
+##############################NEXT PROBE##############################
+# SSLv3 ClientHello probe. Will be able to reliably identify the SSL version
+# used, unless the server is running SSLv2 only. Note that it will also detect
+# TLSv1-only servers, based on a failed handshake alert.
+Probe TCP SSLSessionReq q|\x16\x03\0\0S\x01\0\0O\x03\0?G\xd7\xf7\xba,\xee\xea\xb2`~\xf3\0\xfd\x82{\xb9\xd5\x96\xc8w\x9b\xe6\xc4\xdb<=\xdbo\xef\x10n\0\0(\0\x16\0\x13\0\x0a\0f\0\x05\0\x04\0e\0d\0c\0b\0a\0`\0\x15\0\x12\0\x09\0\x14\0\x11\0\x08\0\x06\0\x03\x01\0|
+rarity 9
+ports 443,444,465,548,636,989,990,992,993,994,995,1241,1311,1443,2000,2252,2443,3443,4443,4444,5061,5443,5550,6443,7210,7272,7443,8009,8181,8194,8443,9001,9443,10443,14443,44443,60443,30030
+#fallback WEB
+
+match adabas m|^,\0,\0\x03\x02\0\0G\xd7\xf7\xbaO\x03\0\?\x05\0\0\0\0\x02\x18\0\xfd\x0b\0\0<=\xdbo\xef\x10n \xd5\x96\xc8w\x9b\xe6\xc4\xdb$| p/ADABAS database/
+
+# Apple Filing Protocol (AFP) over TCP on Mac OS X
+# Sometimes we can get a host name or an IP address; those with come before those without.
+# These are mostly sorted by the flags field.
+
+# Flags \x80\xfb.
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x80\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x05\x06AFPX03\x06AFP2\.2\x0eAFPVersion 2\.1\x0eAFPVersion 2\.0\x0eAFPVersion 1\.1.\tDHCAST128|s p/Apple AFP/ i/name: $1; protocol 2.2; Mac OS X 10.1.*/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.1/
+
+# Flags \x83\xfb.
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x83\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x06\x06AFP3\.1\x06AFPX03\x06AFP2\.2\x0eAFPVersion 2\.1\x0eAFPVersion 2\.0\x0eAFPVersion 1\.1.\tDHCAST128.*[\x04\x05]([\w.-]+)\0|s p/Apple AFP/ i/name: $1; protocol 3.1; Mac OS X 10.2.*/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.2/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x83\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x06\x06AFP3\.1\x06AFPX03\x06AFP2\.2\x0eAFPVersion 2\.1\x0eAFPVersion 2\.0\x0eAFPVersion 1\.1.\tDHCAST128|s p/Apple AFP/ i/name: $1; protocol 3.1; Mac OS X 10.2.*/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.2/
+
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x83\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x03\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\x06Recon1\rClient Krb v20\0.*[\x04\x05]([\w.-]+)\x01.afpserver/([\w.@-]+)\0|s p/Apple AFP/ i/name: $1; afpserver: $3; protocol 3.1; Mac OS X 10.2.*/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.2/
+
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x83\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x03\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver/([\w.@-]+)\0|s p/Apple AFP/ i/name: $1; afpserver: $3; protocol 3.1; Mac OS X 10.3.*/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.3/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x83\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x03\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\0|s p/Apple AFP/ i/name: $1; protocol 3.1; Mac OS X 10.3.*/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.3/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x83\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x03\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128|s p/Apple AFP/ i/name: $1; protocol 3.1; Mac OS X 10.3.*/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.3/
+
+# Flags \x8f\xfa.
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfa.([^\0\x01]+)[\0\x01].*\tMacintosh\x01\x06AFP3\.1.\tDHCAST128|s p/Apple Airport Extreme AFP/ i/name: $1; protocol 3.1/ d/WAP/ cpe:/h:apple:airport_extreme/
+
+# Flags \x8f\xfb.
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x04\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver/([-\w_.@]+)\0|s p/Apple AFP/ i/name: $1; afpserver: $3; protocol 3.2; Mac OS X 10.3 - 10.5/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x04\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver|s p/Apple AFP/ i/name: $1; protocol 3.2; Mac OS X 10.3 - 10.5/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x04\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\0|s p/Apple AFP/ i/name: $1; protocol 3.2; Mac OS X 10.3 - 10.5/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x04\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\x06Recon1\rClient Krb v2\x0fNo User Authent\0.*[\x04\x05]([\w.-]+)\x01.afpserver/([-\w_.@]+)\0|s p/Apple AFP/ i/name: $1; afpserver: $3; protocol 3.2; Mac OS X 10.5 Server/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x_server:10.5/
+
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh.\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver|s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.5/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.5/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh.\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128|s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.5/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.5/
+
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x04\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver=s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.5 - 10.6; $2/ o/Mac OS X/ h/$3/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.5/ cpe:/o:apple:mac_os_x:10.6/
+
+# Patched version of OS X 10.5 may match these too... wait for corrections
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x04\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03.\tDHCAST128.*[\x04\x05]([\w.-]+)\0\0=s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.6; $2/ o/Mac OS X/ h/$3/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.6/
+
+match afp m=^\x01\x03\0\x80........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x04\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver=s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.5 - 10.6; $2/ o/Mac OS X/ h/$3/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.5/ cpe:/o:apple:mac_os_x:10.6/
+match afp m|^\x01\x03\0\x80........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh.\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver|s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.5/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.5/
+
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x04\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03.\tDHCAST128.*[\x04\x05]([\w.-]+)\x01.afpserver=s p/Apple AFP/ i/name: $1; protocol 3.3; Mac OS X 10.6; $2/ o/Mac OS X/ h/$3/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.6/
+
+# Flags \x8f\xfb.
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*AirPort.*AFP3\.2|s p|Apple Airport Extreme/Time Capsule AFP| i/name: $1; protocol 3.2 WAP/ cpe:/h:apple:airport_extreme/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*TimeCapsule.*AFP3\.3\x06AFP3\.2\x06AFP3\.1.\tDHCAST128.*[\x04\x05]([\w.-]+)\0|s p/Apple Time Capsule AFP/ i/name: $1; protocol 3.3/ h/$2/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*TimeCapsule.*AFP3\.3\x06AFP3\.2\x06AFP3\.1.\tDHCAST128|s p/Apple Time Capsule AFP/ i/name: $1; protocol 3.3/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tVMware7,1\x04\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03.\tDHCAST128\x04DHX2\x06Recon1\rClient\x20Krb\x20v2\0\0.*[\x04\x05]([\w.-]+)\x01.afpserver/([\w.@-]+)\0|s p/Apple AFP/ i/name: $1; afpserver: $3; protocol 3.1; Mac OS X 10.6.3/ o/Mac OS X/ h/$2/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+# Sometimes the hostname isn't included
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x8f\xfb.([^\0\x01]+)[\0\x01].*\tMacintosh\x04\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06AFP2\.2.\tDHCAST128|s p/Apple AFP/ i/name: $1; protocol 3.2; Mac OS X 10.3 - 10.5/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+
+# Flags \x9f\xf3
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x9f\xf3.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03=s p/Apple AFP/ i/name: $1; protocol 3.4; Mac OS X 10.9 - 10.10; $2/ o/Mac OS X/ cpe:/a:apple:afp_server/ cpe:/o:apple:mac_os_x:10.10/ cpe:/o:apple:mac_os_x:10.9/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x9f\xf3.([^\0\x01]+).*?VMware(\d+),(\d+)\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03|s p/Apple AFP/ i/name: $1; protocol 3.4; VMware $2.$3/ o/Mac OS X/ cpe:/a:apple:afp_server/ cpe:/o:apple:mac_os_x/a
+
+# Flags \x9f\xfb.
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x9f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06\tDHCAST128\x04DHX2\x06Recon1\rClient Krb v2\x03GSS\x0fNo User Authent.*\x1b\$not_defined_in_RFC4178@please_ignore$=s p/Apple AFP/ i/name: $1; protocol 3.4; Mac OS X 10.6 - 10.8; $2/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.6/ cpe:/o:apple:mac_os_x:10.7/ cpe:/o:apple:mac_os_x:10.8/
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x9f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x05\tDHCAST128\x04DHX2\x06Recon1\rClient Krb v2\x03GSS.*\x1b\$not_defined_in_RFC4178@please_ignore=s p/Apple AFP/ i/name: $1; protocol 3.4; Mac OS X 10.6 - 10.8; $2/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.6/ cpe:/o:apple:mac_os_x:10.7/ cpe:/o:apple:mac_os_x:10.8/
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x9f\xfb.([^\0\x01]+)[\0\x01].*VMware(\d+),(\d+)\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x06\tDHCAST128\x04DHX2\x06Recon1\rClient Krb v2\x03GSS\x0fNo User Authent.*\x1b\$not_defined_in_RFC4178@please_ignore$|s p/Apple AFP/ i/name: $1; protocol 3.4; Mac OS X 10.6; VMware $2.$3/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+match afp m|^\x01\x03\0\0........\0\0\0\0........\x9f\xfb.([^\0\x01]+)[\0\x01].*Xserve\d+,\d+\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x05\tDHCAST128|s p/Apple AFP/ i/name: $1; protocol 3.4; Xserve/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x/a
+match afp m=^\x01\x03\0\0........\0\0\0\0........\x9f\xfb.([^\0\x01]+)[\0\x01].*?(iMac|Mac(?:mini|Pro|Book(?:Air|Pro)?)\d+,\d+)\x05\x06AFP3\.4\x06AFP3\.3\x06AFP3\.2\x06AFP3\.1\x06AFPX03\x05\tDHCAST128\x04DHX2\x06Recon1\x03GSS\x0fNo User Authent=s p/Apple AFP/ i/name: $1; protocol 3.4; Mac OS X 10.8; $2/ o/Mac OS X/ cpe:/a:apple:afp_server/a cpe:/o:apple:mac_os_x:10.8/
+
+softmatch afp m|^\x01\x03\0\0........\0\0\0\0.*AFP|s
+
+match ajp13 m|^AB\0N\x04\x01\x94\0\x06/cccb/\0\0\x02\0\x0cContent-Type\0\0\x17text/html;charset=utf-8\0\0\x0eContent-Length\0\0\x03970\0AB\x03| p/Apache Jserv/
+
+match cpu m|^unsupported auth method\0| p/Plan 9 cpu/ o/Plan 9/ cpe:/o:belllabs:plan_9/a
+
+match decomsrv m|^\x02\0\0\x01\x03\0U\xd0DSQ\x02\0\0\x01\x03\0U\xd0DSQ$| p/Lotus Domino decommission server/ i/decomsrv.exe/ cpe:/a:ibm:lotus_domino/
+
+match dsr-video m|^\0\0\0\0\0\x84\0\x10\x01\xa3{\x10\0\0\0\0$| p/Avocent KVM DSR video/
+
+match h323q931 m|^\x03\0\x000\x08\x02\0\0}\x08\x02\x80\xe2\x14\x01\0~\0\x1d\x05\x08 \x19\0\x06\0\x08\x91J\0\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0| p/Polycom ViewStation H.323/
+
+match http m|^HTTP/1\.0 500 Internal Server Error\r\nConnection: Close\r\nContent-Type: text/html\r\n.*<p>java\.lang\.Exception: Invalid request: \x16\x03|s p/Dell PowerEdge OpenManage Server Administrator httpd/ o/Windows/ cpe:/a:dell:openmanage_server_administrator/ cpe:/o:microsoft:windows/a
+match http m|^HTTP/1\.0 400 Bad Request\nContent-type: text/html\r\nDate: .*\r\nConnection: close\r\n\r\n<HEAD><TITLE>400 Bad Request</TITLE></HEAD>\n<BODY><H1>400 Bad Request</H1>\nUnsupported method\.\n</BODY>\n| p/Brivo EdgeReader access control http interface/ d/security-misc/
+
+match http-proxy m|^ 400 badrequest\r\nVia: 1\.0 ([\w.-]+) \(McAfee Web Gateway ([\w._-]+)\)\r\nConnection: Close\r\n| p/McAfee Web Gateway/ v/$2/ i/Via $1/ cpe:/a:mcafee:web_gateway:$2/
+
+match ilo-vm m|^\"\0\x03\0$| p/HP Integrated Lights-Out Virtual Media/ cpe:/h:hp:integrated_lights-out/
+
+match login m|^\0\r\nlogin: \^W\^@\^@\^@\^| p/VxWorks logind/ o/VxWorks/ cpe:/o:windriver:vxworks/a
+
+match maxdb m|^.Rejected bad connect packet\0$|s p/SAP MaxDB/
+
+match msexchange-logcopier m|^\x15\x01\0\0\x08\0\0\0\0\x80\t\x03\x08$| p/Microsoft Exchange 2010 log copier/ cpe:/a:microsoft:exchange_server:2010/
+
+match modbus m|^\x16\x03\0\0\0\x03\0\x80\x01| p/Modbus TCP/
+
+match netbios-ssn m|^\0\0\0%G\xd7\xf7\xba,\xff\xea\xff\xff~\xf3\0\xfd\x82{\xb9\xd5\x96\xc8w\x9b\xe6\xc4\xdb<=\xdbo\xef\x10n\0\0\0\0\x16\0$| p/Konica Minolta bixhub 350 printer smbd/ d/printer/ cpe:/h:konicaminolta:bixhub_350/a
+
+match pbx-alarm m|^1\x0c5\x0c9\x0c\x0b\x03$| p/Aastra Open Interfaces Platform PBX alarm server/ d/PBX/ cpe:/a:aastra:oip/
+
+match pop3-proxy m|^ERR concurrent connection limit in avast! exceeded\(pass:\d+, processes:([\w._-]+)\[\d+\]\)\r\n| p/Avast! anti-virus pop3 proxy/ i/connection limit exceeded by $1/ o/Windows/ cpe:/o:microsoft:windows/
+
+# This funny service runs on port 9001 and seems to echo other service probes,
+# however they don't seem to come in any obvious order. Examples:
+# ---------- GenericLines ----------
+# m|^GET / HTTP/1\.0|
+# ---------- WEB ----------
+# m|^OPTIONS / HTTP/1\.0|
+# ---------- SSLSessionReq ----------
+# m|^OPTIONS / RTSP/1\.0|
+# ---------- SSLv23SessionReq ----------
+# m|^\x80\0\0\(r\xfe\x1d\x13\0\0\0\0\0\0\0\x02\0\x01\x86\xa0\0\x01\x97\x7c\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0|
+match postx-reporting m|^OPTIONS / RTSP/1\.0| p/PostX IP Reporting alarm system/
+
+match remoting m|^\.NET\x01\0\x02\0\0\0\0\0\0\0\x02\0\x03\x01\0\x03\0\x01\x01..\0\0System\.Runtime\.Remoting\.RemotingException: |s p/MS .NET Remoting services/ cpe:/a:microsoft:.net_framework/
+
+match siebel m|^\0\0\0\x40\0\0\0\0\0\0\0\x01\0\0\0\0\0\0..\0\0\0\x05\0\0\0\0\0\0\0\0\x4e...\0...\0\0\0\0\0\0\0\0\0\0\0\x05\0\0\0\x0c\0\0\0\x08\0\x12\0\x68\0\0\0\0$| p/Siebel Gateway Name Server/ cpe:/a:oracle:siebel_suite/
+
+# OpenSSL/0.9.7aa, 0.9.8e
+match ssl m|^\x16\x03\0\0J\x02\0\0F\x03\0| p/OpenSSL/ i/SSLv3/ cpe:/a:openssl:openssl/
+
+# Microsoft-IIS/5.0 - note that OpenSSL must go above this one because this is more general
+match ssl m|^\x16\x03\0..\x02\0\0F\x03\0|s p/Microsoft IIS SSL/ o/Windows/ cpe:/a:microsoft:iis/ cpe:/o:microsoft:windows/a
+# Novell Netware 6 Enterprise Web server 5.1 https
+# Novell Netware Ldap over SSL or enterprise web server 5.1 over SSL
+match ssl m|^\x16\x03\0\0:\x02\0\x006\x03\0| p/Novell NetWare SSL/ o/NetWare/ cpe:/o:novell:netware/a
+# Cisco IDS 4.1 Appliance
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03\0\xd10:\xbd\\\x8e\xe3\x15\x1c\x0fZ\xe4\x04\x87\x07\xc0\x82\xa9\xd4\x0e\x9c1LXk\xd1\xd2\x0b\x1a\xc6/p\0\0\n\0\x16\x03\0\x026\x0b\0\x022\0| p/Cisco IDS SSL/ d/firewall/
+# PGP Corporation Keyserver Web Console 7.0 - custom Apache 1.3
+# PGP LDAPS Keyserver 8.X
+match ssl m|^\x16\x03\0\0\+\x02\0\0'\x03\0...\?|s p/PGP Corporation product SSL/
+# Unreal IRCd SSL
+# RemotelyAnywhere
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03\0\?|
+# Tumbleweed SecureTransport 4.1.1 Transaction Manager Secure Port on Solaris
+# Dell Openmanage
+match ssl m|^\x15\x03[\x01\x00]\0\x02\x01\0$| p/multi-vendor SSL/
+# Probably Oracle https?
+match ssl m|^}\0\x02\0\0\0\0\0\0\0\0\0\0\0\0\0| p/Oracle https/
+match ssl m|^\x15\x03\0\0\x02\x02\(31666:error:1408A0C1:SSL routines:SSL3_GET_CLIENT_HELLO:no shared cipher:s3_srvr\.c:881:\n| p/Webmin SSL Control Panel/
+match ssl m|^20928:error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol:s23_srvr\.c:565:\n| p/qmail-pop3d behind stunnel/
+
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03\0B| p/Tor over SSL/ cpe:/a:torproject:tor/
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03.*IOS-Self-Signed-Certificate|s p/Cisco IOS ssl/ d/router/
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03.*\nCalifornia.*\tPalo Alto.*\x0cVMware, Inc\..*\x1bVMware Management Interface|s p/VMware management interface SSLv3/
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03.*\x0edropbox-client0|s p/Dropbox client SSLv3/ cpe:/a:dropbox:dropbox/
+match ssl m|^\x16\x03\0\0\*\x02\0\0&\x03.*vCenterServer_([\w._-]+)|s p/VMware ESXi Server httpd/ v/$1/ cpe:/o:vmware:esxi:$1/
+
+# Alert (Level: Fatal, Description: Protocol Version|Handshake Failure)
+match ssl m|^\x15\x03[\x00-\x03]\0\x02\x02[F\x28]|
+
+match xtel m|^\x15Annuaire \xe9lectronique| p/xteld/ i/French/
+
+match tor m|^\x16\x03\0\0\*\x02\0\0&\x03\0.*T[oO][rR]1.*[\x00-\x20]([-\w_.]+) <identity>|s p/Tor node/ i/Node name: $1/ cpe:/a:torproject:tor/
+
+# Sophos Message Router
+match ssl/sophos m|^\x16\x03\0.*Router\$([a-zA-Z0-9_-]+).*Sophos EM Certification Manager|s p/Sophos Message Router/ h/$1/
+match ssl/sophos m|^\x16\x03\0.*Sophos EM Certification Manager|s p/Sophos Message Router/
+
+match ssl/openvas m|^\x16\x03\x01\0J\x02\0\0F\x03\x01| p/OpenVAS server/
+
+# Generic: TLSv1.3 ServerHello
+match ssl m|^\x16\x03\x03..\x02...\x03\x03|s p/TLSv1.2/
+# Generic: TLSv1.2 ServerHello
+match ssl m|^\x16\x03\x02..\x02...\x03\x02|s p/TLSv1.1/
+# Generic: TLSv1.1 ServerHello
+match ssl m|^\x16\x03\x01..\x02...\x03\x01|s p/TLSv1.0/
+
+# Generic: SSLv3 ServerHello
+match ssl m|^\x16\x03\0..\x02...\x03\0|s p/SSLv3/
+
+match storagecraft-image m|^\x15\x01\0\0\x08\0\0\0\0\x80\t\x03\x08\.NET\x01\0\x02\0\0\0\0\0\0\0\x02\0\x03\x01\0\x03\0\x01\x01 \0\0\0Authentication failure on server\x05\0\0\0\0$| p/StorageCraft Image Manager/
+
+match xamarin m|^ERROR: Another instance is running\n| p/Xamarin MonoTouch/
+
+##############################NEXT PROBE##############################
+# TLSv1.2 ClientHello probe. TLS implementations may choose to ignore (close
+# silently) incompatible ClientHello messages like the one in SSLSessionReq.
+# This one should be widely compatible, and if we avoid adding non-ssl service
+# matches here, we can continue to upgrade it (bytes 10 and 11 and the ranges
+# in the match lines)
+Probe TCP TLSSessionReq q|\x16\x03\0\0\x69\x01\0\0\x65\x03\x03U\x1c\xa7\xe4random1random2random3random4\0\0\x0c\0/\0\x0a\0\x13\x009\0\x04\0\xff\x01\0\0\x30\0\x0d\0,\0*\0\x01\0\x03\0\x02\x06\x01\x06\x03\x06\x02\x02\x01\x02\x03\x02\x02\x03\x01\x03\x03\x03\x02\x04\x01\x04\x03\x04\x02\x01\x01\x01\x03\x01\x02\x05\x01\x05\x03\x05\x02|
+rarity 5
+ports 443,444,465,636,989,990,992,993,994,995,1241,1311,2252,3389,4444,5061,6679,6697,8443,9001,30030
+#fallback WEB
+
+# SSLv3 - TLSv1.2 ServerHello
+match ssl m|^\x16\x03[\0-\x03]..\x02\0\0.\x03[\0-\x03]|s
+# SSLv3 - TLSv1.2 Alert
+match ssl m|^\x15\x03[\0-\x03]\0\x02[\x01\x02].$|s
+
+##############################NEXT PROBE##############################
+# SSLv2-compatible ClientHello, 39 ciphers offered.
+# Will elicit a ServerHello from most SSL implementations, apart from those
+# that are TLSv1-only or SSLv3-only. As it comes after the SSLv3 probe
+# (SSLSessionReq), its only added value is the detection of SSLv2-only servers.
+# SSLv2-only servers are rare so this probe has a high rarity.
+Probe TCP SSLv23SessionReq q|\x80\x9e\x01\x03\x01\x00u\x00\x00\x00 \x00\x00f\x00\x00e\x00\x00d\x00\x00c\x00\x00b\x00\x00:\x00\x009\x00\x008\x00\x005\x00\x004\x00\x003\x00\x002\x00\x00/\x00\x00\x1b\x00\x00\x1a\x00\x00\x19\x00\x00\x18\x00\x00\x17\x00\x00\x16\x00\x00\x15\x00\x00\x14\x00\x00\x13\x00\x00\x12\x00\x00\x11\x00\x00\n\x00\x00\t\x00\x00\x08\x00\x00\x06\x00\x00\x05\x00\x00\x04\x00\x00\x03\x07\x00\xc0\x06\x00@\x04\x00\x80\x03\x00\x80\x02\x00\x80\x01\x00\x80\x00\x00\x02\x00\x00\x01\xe4i<+\xf6\xd6\x9b\xbb\xd3\x81\x9f\xbf\x15\xc1@\xa5o\x14,M \xc4\xc7\xe0\xb6\xb0\xb2\x1f\xf9)\xe8\x98|
+
+rarity 5
+ports 443,444,465,548,636,989,990,992,993,994,995,1241,1311,2000,4444,5550,7210,7272,8009,8194,8443,9001,30030
+#fallback WEB
+
+# SSLv2 ServerHello
+match ssl m|^..\x04\0.\0\x02|s p/SSLv2/
+
+# TLSv1 ServerHello, compatible with SSLv2:
+match ssl m|^\x16\x03\x01..\x02...\x03\x01|s p/TLSv1/
+
+# SSLv3 ServerHello, compatible with SSLv2:
+match ssl m|^\x16\x03\0..\x02...\x03\0|s p/SSLv3/
+
+# SSLv3 - TLSv1.2 Alert
+match ssl m|^\x15\x03[\0-\x03]\0\x02[\x01\x02].$|s
