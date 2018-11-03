@@ -1,0 +1,6 @@
+*.pyc
+.idea/
+tests/
+fuxi/views/modules/scanner/pocsuite_plugin/
+logs/
+instance/

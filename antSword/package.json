@@ -1,0 +1,38 @@
+{
+  "name": "antsword",
+  "version": "2.0.0",
+  "description": "中国蚁剑是一款跨平台的开源网站管理工具",
+  "main": "app.js",
+  "dependencies": {
+    "extract-zip": "^1.6.7",
+    "geoips": "0.0.1",
+    "iconv-lite": "^0.4.23",
+    "nedb": "^1.5.1",
+    "superagent": "^3.8.3",
+    "superagent-proxy": "^1.0.3",
+    "tar": "^4.4.6",
+    "through": "^2.3.8"
+  },
+  "scripts": {
+    "start": "electron app.js",
+    "build": "npm start"
+  },
+  "author": "antoor <u@uyu.us>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AntSwordProject/AntSword"
+  },
+  "update": {
+    "md5": "184c9217b01513647ccfaad49e795cfe",
+    "logs": "移除webpack以及其他不必要的依赖，直接无需编译即可执行ES6代码\n更新美化关于页面\n重构modules/request.js后端数据请求模块\n添加 aspx hex encoder 支持\n修正custom shell 读取自身时数据被截断的 bug\n增加php中的mysql数据库模板，用于不支持使用mysqli的服务器\n以及其他小部分的代码重构优化",
+    "sources": {
+      "coding.net": "https://coding.net/api/share/download/c405db5d-6fdb-4078-9326-32cd86c392a3",
+      "github": "https://github.com/antoor/antSword/releases/download/1.3.0/update.zip"
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/AntSwordProject/AntSword/issues"
+  },
+  "homepage": "https://github.com/AntSwordProject/AntSword/"
+}
