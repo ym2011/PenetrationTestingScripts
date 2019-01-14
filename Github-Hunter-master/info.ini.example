@@ -1,0 +1,30 @@
+[KEYWORD]
+keyword1 = your keyword here
+keyword2 = your keyword here
+keyword3 = your keyword here
+...
+etc
+
+[EMAIL]
+host = Email server
+user = Email User
+password = Email password
+
+[SENDER]
+sender = The email sender
+
+[RECEIVER]
+receiver1 = Email receiver No.1
+receiver2 = Email receiver No.2
+
+[Github]
+user = Github Username
+password = Github Password
+
+[PAYLOADS]
+p1 = Payload 1
+p2 = Payload 2
+p3 = Payload 3
+p4 = Payload 4
+p5 = Payload 5
+p6 = Payload 6
