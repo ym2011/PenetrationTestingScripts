@@ -19,9 +19,11 @@ This project is still in beta version. Any feedback, bug reports and PRs are gre
 
 note:
 *The scan URL is: http://yourip:8080/
+
 *The admin URL is: http://yourip:8080/console/
+
 *The results are stored in "/root/rainmap-lite-1.0/rainmap-lite/nmaper/static/results", it all depends on you where you extract  the compressed package of rainmap-lite
-*The log usually locates at " /var/log/nmaper.log ", or  you can just do the following step£º
+*The log usually locates at " /var/log/nmaper.log ", or  you can just do the following stepÂ£Âº
 updatedb
 cd `locate nmaper.log`
 
