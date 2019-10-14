@@ -69,7 +69,6 @@ display_conf(){
 }
 
 
-
 # Setting Menu
 start_menu(){
     clear
