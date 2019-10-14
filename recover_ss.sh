@@ -91,13 +91,13 @@ start_menu(){
         1)
         default_install
         ;;
-	2)
-	restart_service
+		2)
+		restart_service
         ;;
         3)
         show_status
-	;;
-	4)
+		;;
+		4)
         display_conf
         ;;
         5)
@@ -126,7 +126,6 @@ echo_Green(){
 echo_GreenBG(){
     echo -e "${GreenBG}$1${Font}"
 }
-
 
 
 start_menu
