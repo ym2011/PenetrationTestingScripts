@@ -81,7 +81,6 @@ start_menu(){
 	echo
 	echo_Green "# ======================================="
     echo_SkyBlue ">  1. Default Option, Recover Shadowsocks and bbr automatically  "
-	echo_Green "# ======================================="
 	echo_SkyBlue ">  2. Restart Shadowsocks service "
 	echo_Green 	 ">  3. Display status for Shadowsocks and bbr "
 	echo_Green   ">  4. Display Shadowsocks and bbr Configuration "
