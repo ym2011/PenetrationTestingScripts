@@ -3,10 +3,11 @@
 # date		: 2019-10-08
 # version 	: 1.0
 # target 	: After restored Snapshots to the machine, the script helps to correct the configuration easily.
-recover_install(){
+default_install(){
+#Recover the backup configuration for shadowsocks
 	echo
 	echo_Yellow "# ======================================="
-	echo_GreenBG "Stop Shadowsocks "
+	echo_GreenBG "Stop Shadowsocks service "
 	systemctl stop shadowsocks
     # open ports for ss server 
 	echo
@@ -16,17 +17,19 @@ recover_install(){
 	firewall-cmd --zone=public --add-port=2019/tcp --permanent
 	firewall-cmd --reload
 	# Get public IP address
+	echo_GreenBG "Change the ip in Configuration for shadowsocks"
 	IP=$(/sbin/ifconfig eth0 | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' |head -n 1)
 	# change the IP for current machine 
     sed -i '3s/^.*$/"server": "'$IP'",/g' /etc/shadowsocks.json
     # reload 
 	echo
 	echo_Yellow "# ======================================="
-	echo_GreenBG " show the status for Shadowsocks "
+	echo_GreenBG "Show the status for Shadowsocks "
 	systemctl daemon-reload
 	systemctl start shadowsocks
 	systemctl status shadowsocks -l
 }
+
 
 restart_service(){
 	echo
@@ -34,8 +37,10 @@ restart_service(){
 	echo_GreenBG "restart Shadowsocks "
 	systemctl stop shadowsocks
 	systemctl start shadowsocks
+	echo_GreenBG "Show the status for Shadowsocks "
 	systemctl status shadowsocks -l
 }
+
 
 show_status(){
 	echo
@@ -72,14 +77,6 @@ base_tools(){
     fi
 }
 
-wget_curl(){
-    if [[ ! -e /usr/bin/wget ]]; then
-        base_tools
-    fi
-    if [[ ! -e /usr/bin/curl ]]; then
-        base_tools
-    fi
-}
 
 # Setting Menu
 start_menu(){
@@ -92,7 +89,7 @@ start_menu(){
     read -p "Please Enter the Number to Choose (Press Enter to Default):" num
     case "$num" in
         1)
-        recover_install
+        default_install
         ;;
 		2)
 		restart_service
@@ -112,6 +109,7 @@ start_menu(){
         esac
 }
 
+
 # Definition Display Text Color
 Green="\033[32m"  && Red="\033[31m" && GreenBG="\033[42;37m" && RedBG="\033[41;37m"
 Font="\033[0m"  && Yellow="\033[0;33m" && SkyBlue="\033[0;36m"
@@ -130,6 +128,5 @@ echo_GreenBG(){
 }
 
 
-# Now, install  ss bbr
-wget_curl
+
 start_menu
