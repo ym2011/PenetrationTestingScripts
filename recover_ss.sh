@@ -3,6 +3,7 @@
 # date		: 2019-10-08
 # version 	: 1.0
 # target 	: After restored Snapshots to the machine, the script helps to correct the configuration easily.
+
 default_install(){
 #Recover the backup configuration for shadowsocks
 	echo
@@ -68,20 +69,19 @@ display_conf(){
 }
 
 
-base_tools(){
-    # Simple Judgment System:  Debian / Centos
-    if [ -e '/etc/redhat-release' ]; then
-        yum update -y && yum install -y  wget curl vim ca-certificates
-    else
-        apt update && apt install -y  wget curl vim  ca-certificates
-    fi
-}
-
 
 # Setting Menu
 start_menu(){
     clear
+	echo
+	echo_Green "# ======================================="
+	echo "Firstly, creating the machine and Restored Snapshot."
+	echo "Secondly, We should correct the configuration for shadowsocks."
+	echo "Finally, Following the guide, it can help you do it easily!!!"
+	echo
+	echo_Green "# ======================================="
     echo_SkyBlue ">  1. Default Option, Recover Shadowsocks and bbr automatically  "
+	echo_Green "# ======================================="
 	echo_SkyBlue ">  2. Restart Shadowsocks service "
 	echo_Green 	 ">  3. Display status for Shadowsocks and bbr "
 	echo_Green   ">  4. Display Shadowsocks and bbr Configuration "
@@ -91,13 +91,13 @@ start_menu(){
         1)
         default_install
         ;;
-		2)
-		restart_service
+	2)
+	restart_service
         ;;
         3)
         show_status
-		;;
-		4)
+	;;
+	4)
         display_conf
         ;;
         5)
