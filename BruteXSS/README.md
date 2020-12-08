@@ -1,13 +1,13 @@
-#BruteXSS
-#The redistribute version is at https://github.com/ym2011/penetration/tree/master/BruteXSS
-#there are more payload added into the file
-BruteXSS - Cross-Site Scripting BruteForcer
+#BruteXSS  
+#The redistribute version is at https://github.com/ym2011/penetration/tree/master/BruteXSS  
+#there are more payload added into the file  
+BruteXSS - Cross-Site Scripting BruteForcer  
 
-Author: [Shawar Khan](https://shawarkhan.com)
+Author: [Shawar Khan](https://shawarkhan.com)  
 
-**The BruteXSS project is sponsored and supported by [Netsparker Web Application Security Scanner](https://www.netsparker.com)**
+**The BruteXSS project is sponsored and supported by [Netsparker Web Application Security Scanner](https://www.netsparker.com)**  
 
-Disclaimer: I am not responsible for any damage done using this tool. This tool should only be used for educational purposes and for penetration testing.
+Disclaimer: I am not responsible for any damage done using this tool. This tool should only be used for educational purposes and for penetration testing.  
 
 
 ###Compatibility: 
