@@ -28,7 +28,6 @@
 #root@kali:/# locate siege
 #
 #
-#
 #root@kali:~# crontab -u root /root/batchaccess#使用root用户定时执行 /root/batchaccess 这个文件
 #root@kali:~# crontab -u root -l# 列出 root用户的定时任务
 #root@kali:~# crontab -u root -r# 清空 root用户的定时任务
@@ -41,7 +40,6 @@
 #
 #root@kali:~# /etc/init.d/cron restart
 #root@kali:~# service cron restart
-#
 #
 
 
