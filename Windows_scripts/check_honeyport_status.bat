@@ -1,13 +1,14 @@
 @echo off
 REM author：kym
-REM date: 2021-07-07
+REM date: 2021-07-15
 REM purpose：check the honeyport ports status
-title honeyport running  status.
+title Honeyport running  status.
 echo The work runs for a while,please wait................
 call:server_port
 call:pro-02_port
 call:pro-01_port
 call:dev-01_port
+echo Please check your alter emails.
 pause
 exit /b 0
 
