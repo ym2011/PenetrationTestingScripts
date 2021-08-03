@@ -10,7 +10,7 @@
     "nedb": "^1.5.1",
     "superagent": "^3.8.3",
     "superagent-proxy": "^1.0.3",
-    "tar": "^4.4.6",
+    "tar": "^4.4.15",
     "through": "^2.3.8"
   },
   "scripts": {
