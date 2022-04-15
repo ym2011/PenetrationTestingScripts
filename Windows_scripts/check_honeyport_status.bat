@@ -3,12 +3,15 @@ REM author：kym
 REM date: 2021-07-15
 REM purpose：check the honeyport ports status
 title Honeyport running  status.
-echo The work runs for a while,please wait................
+echo The work runs for checking honeyport ports status
+echo Please wait................
 call:server_port
 call:pro-02_port
 call:pro-01_port
 call:dev-01_port
+echo ...............................
 echo Please check your alter emails.
+echo End............................
 pause
 exit /b 0
 
